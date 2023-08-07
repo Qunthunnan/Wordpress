@@ -1,0 +1,24 @@
+footer{
+    min-height: 166px;
+    padding: 61px 0px 69px 0px;
+    background-color: #1a1a1a;
+}
+footer .footer-links, footer .footer-tel{
+    display: flex;
+    justify-content: center;
+    color: #888888;
+    font-size: 15px;
+    font-weight: 300;
+}
+footer .footer-tel{
+    margin-top: 5px;
+}
+footer a:link, :visited{
+    color: #888888;
+}
+footer a{
+    margin: 0px 5px;
+}
+footer a:active{
+    text-decoration: none;
+}

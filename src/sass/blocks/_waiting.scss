@@ -1,0 +1,44 @@
+section.waiting {
+    padding: 85px 0px 75px 0px;
+    min-height: 604px;
+    background-color: #efefef;
+}
+.waiting .waiting-title, .finish .finish-title{
+    color: #252525;
+    font-size: 30px;
+    font-weight: 400;
+    text-align: center;
+    text-transform: uppercase;
+}
+.waiting .line, .finish .finish-line {
+    width: 217px;
+    height: 4px;
+    background-color: #f9bf3b;
+    margin: 0px auto;
+    margin-top: 18px;
+}
+.waiting .promo-text {
+    color: #4a4a4a;
+    font-size: 23px;
+    font-weight: 400;
+    text-align: center;
+    margin-top: 17px;
+}
+.waiting .waiting-wrapper{
+    display: flex;
+    justify-content: space-between;
+}
+.waiting .waiting-block{
+    width: 354px;
+    margin-top: 45px;    
+}
+.waiting .waiting-block .descr-text{
+    margin-top: 26px;
+    color: #4a4a4a;
+    font-size: 15px;
+    font-weight: 300;
+    font-style: normal;
+    letter-spacing: normal;
+    line-height: 21px;
+    text-align: center;
+}

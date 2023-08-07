@@ -1,0 +1,34 @@
+.finish .finish-title {
+    color: #efefef;
+}
+.finish {
+    min-height: 447px;
+    padding: 86px 0px 79px 0px;
+    background: url('../img/finish/second_bg.png') center center/cover no-repeat;
+}
+
+.finish .finish-wrapper{
+    display: flex;
+    margin-top: 41px;
+    justify-content: space-between;
+}
+.finish .finish-item{
+    width: 204px;
+}
+
+.finish .finish-circle{
+    width: 115px;
+    height: 115px;
+    margin: 0px auto;
+    background-color: #b4e2ff;
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.finish .item-text{
+    color: #efefef;
+    font-size: 17px;
+    font-weight: 300;
+    text-align: center;
+}

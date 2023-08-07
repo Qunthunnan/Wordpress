@@ -1,0 +1,90 @@
+section.main {
+    min-height: 800px;
+    background: url('../img/main/main_bg.png') center center/cover no-repeat;
+    padding: 39px 0px 62px 0px;
+}
+.main .logo .logo-icon {
+    display: block;
+    margin: 0px auto;
+}
+.main .logo .logo-text {
+    margin-top: 14px;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 500;
+    font-style: normal;
+    letter-spacing: normal;
+    text-align: center;
+    text-transform: uppercase;
+}
+.main .title-text {
+    margin-top: 53px;
+    margin-bottom: 0px;
+    color: #f9bf3b;
+    font-size: 41px;
+    font-weight: 900;
+    text-align: center;
+    text-transform: uppercase;
+}
+.main .title-big-text {
+    color: #ffffff;
+    font-size: 80px;
+    font-weight: 900;
+    text-align: center;
+    text-transform: uppercase;
+}
+.main .title-third-text {
+    color: #f9bf3b;
+    font-size: 41px;
+    font-weight: 900;
+    text-align: center;
+    text-transform: uppercase;
+}
+.main .promo-text {
+    margin-top: 23px;
+    color: #ffffff;
+    font-size: 21px;
+    line-height: 28px;
+    font-weight: 300;
+    text-align: center;
+}
+.main .promo-text .free {
+    color: #f9bf3b;
+    font-weight: 700;
+}
+
+.main .book-btn , .booking .booking-btn{
+    display: block;
+    margin: 0 auto;
+    margin-top: 73px;
+    width: 313px;
+    height: 72px;
+    border: 0px;
+    border-radius: 3px;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0px 4px, rgba(0, 0, 0, 0.15) inset 0px -5px;
+    background-image: linear-gradient(to top, #2798b9 0%, #3ab6da 100%);
+    color: #ffffff;
+    font-family: "Roboto Condensed";
+    font-size: 21px;
+    font-weight: 400;
+    text-align: center;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+.main .book-btn:active, .booking .booking-btn:active{
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0px 4px, rgba(0, 0, 0, 0.15) inset 0px 0px 0px 4px;
+}
+
+.main .learn-more-text {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 100;
+    text-align: center;
+    text-transform: uppercase;
+    margin-top: 70px;
+}
+.main .arrow {
+    display: block;
+    margin: 0px auto;
+    margin-top: 13px;
+}

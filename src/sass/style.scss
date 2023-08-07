@@ -1,0 +1,23 @@
+@import 'base/fonts';
+
+html {
+    font-family: "Roboto";
+}
+* {
+    box-sizing: border-box;
+    margin: 0px;
+    padding: 0px;
+}
+.container {
+    margin: 0 auto;
+}
+
+@import 'blocks/main';
+@import 'blocks/waiting';
+@import 'blocks/optimisation';
+@import 'blocks/finish';
+@import 'blocks/booking';
+@import 'blocks/first-webinar';
+@import 'blocks/footer';
+
+@import 'base/media';
