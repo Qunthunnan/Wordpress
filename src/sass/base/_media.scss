@@ -4,9 +4,28 @@
     }
 }
 
+@media (max-with: 1800px) {
+
+    .optimisation {
+        background: 0% 100%/58% no-repeat url(../img/optimisation/woman_bg.jpg);
+    }
+
+    .optimisation .optimisation-title, .optimisation .optimisation-text {
+        margin-left: 520px;
+    }
+}
+
 @media (max-width: 1400px) {
     .container {
         max-width: 1140px;
+    }
+
+    .optimisation {
+        background: 0% 100%/58% no-repeat url(../img/optimisation/woman_bg.jpg);
+    }
+
+    .optimisation .optimisation-title, .optimisation .optimisation-text {
+        margin-left: 520px;
     }
 }
 
@@ -20,6 +39,10 @@
         img {
             width: 100%;
         }
+    }
+
+    .optimisation .optimisation-title, .optimisation .optimisation-text {
+        margin-left: 370px;
     }
 }
 
@@ -47,6 +70,15 @@
     .waiting .waiting-block {
         width: 219px;
     }
+
+
+    .optimisation {
+        background: 0 25%/58% no-repeat url(../img/optimisation/woman_bg.jpg);
+    }
+
+    .optimisation .optimisation-title, .optimisation .optimisation-text {
+        margin-left: 280px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -73,6 +105,49 @@
 
     .waiting .waiting-block {
         width: 354px;
+    }
+
+    .optimisation {
+        padding: 60px 0 45px 0;
+    }
+
+    .optimisation .optimisation-title {
+        margin-left: 206px;
+        font-size: 25px;
+    }
+
+    .optimisation .optimisation-text {
+        margin-left: 206px;
+    }
+
+    .finish {
+        padding: 50px 0 40px 0;
+    }
+
+    .finish .finish-title {
+        font-size: 26px;
+    }
+
+    .finish .finish-item {
+        width: 80px;
+    }
+
+    .finish .finish-circle {
+        width: 90px;
+        height: 90px;
+    }
+
+    .booking {
+        padding: 40px 0;
+    }
+
+    .booking .booking-text {
+        font-size: 24px;
+    }
+
+    .first-webinar {
+        padding: 50px 0px 40px 0px;
+        min-height: 527px;
     }
 }
 
@@ -119,5 +194,98 @@
 
     .waiting .promo-text {
         font-size: 18px;
+    }
+
+    .optimisation {
+        padding: 40px 0 35px 0;
+        background: unset;
+    }
+
+    .optimisation .optimisation-title {
+        margin-left: 0px;
+        font-size: 18px;
+    }
+
+    .optimisation .optimisation-mobile {
+        display: block;
+        margin: 0px auto;
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .optimisation .optimisation-text {
+        margin-left: 0px;
+        font-size: 14px;
+    }
+
+    .finish {
+        padding: 35px 0 30px 0;
+    }
+
+    .finish .finish-title {
+        font-size: 20px;
+    }
+
+    .finish .finish-wrapper {
+        flex-direction: column;
+        align-items: center;
+        margin-top: 10px;
+    }
+
+    .finish .finish-item {
+        width: 204px;
+        margin-top: 20px;
+    }
+
+    .finish .finish-circle {
+        width: 115px;
+        height: 115px;
+    }
+
+    .booking {
+        padding: 30px 0;
+        min-height: 520px;
+    }
+
+    .booking .booking-text {
+        font-size: 20px;
+        margin-top: 30px;
+     }
+
+     .booking .booking-btn {
+        width: 280px;
+        height: 61px;
+        margin-top: 25px;
+     }
+
+     .first-webinar {
+        padding: 40px 0px 30px 0px;
+    }
+
+    .first-webinar .first-img {
+        width: 90%;
+    }
+
+    .first-webinar .first-web-title {
+        font-size: 26px;
+    }
+
+    .first-webinar .first-web-time {
+        font-size: 30px;
+        margin-top: 20px;
+    }
+
+    .first-webinar .first-text {
+        font-size: 19px;
+        margin-top: 20px;
+    }
+
+    footer {
+        padding: 35px 0 30px 0;
+        min-height: 100px;
+    }
+
+    footer .footer-links, footer .footer-tel {
+        font-size: 13px;
     }
 }

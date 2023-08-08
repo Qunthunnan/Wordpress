@@ -1,10 +1,13 @@
 .optimisation {
     min-height: 550px;
     padding: 102px 0px 107px 0px;
-    background: url('../img/optimization/woman_bg.png') no-repeat;
-    background-position-x: 150px;
-    background-position-y: 100%;
+    background: 12% 100%/47% no-repeat url(../img/optimisation/woman_bg.jpg);
 }
+
+.optimisation .optimisation-mobile {
+    display: none;
+}
+
 .optimisation .optimisation-title{
     color: #299cbd;
     font-size: 30px;
