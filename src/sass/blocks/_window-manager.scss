@@ -1,0 +1,203 @@
+
+
+.window-manager {
+    transition: 0.5s all;
+    font-weight: 300;
+    --select-width: 165px;
+    --select-height: 40px;
+    --default-border-color: #ccc;
+    --default-hover-color: #e7e7e7;
+    --default-border-radius: 5px;
+    --default-input-width:300px;
+
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    &__window {
+        transition: 0.5s all;
+        background-color: white;
+        border-radius: 5px;
+        padding: 30px;
+        &_book {
+            display: block;
+        }
+        &_booked {
+            display: none;
+        }
+
+        &__close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            span {
+                font-size: 22px;
+            }
+        }
+        &__lesson-type {
+            display: flex;
+            flex-direction: column;
+            &-select {
+                margin-top: 10px;
+                position: relative;
+                display: block;
+                width: var(--select-width);
+                &:hover {
+                    ul {
+                        transition: 0.5s all;
+                        display: block;
+                    }
+                }
+    
+                ul {
+                    display: none;
+                    position: absolute;
+                    list-style: none;
+                    padding: 0;
+                    margin: 0;
+                    width: var(--select-width);
+                }
+    
+                li {
+                    transition: 0.5s all;
+                    &:first-child {
+                        border-radius: 5px 5px 0px 0px;
+                        border-top: 1px solid #ccc;
+                        border-left: 1px solid #ccc;
+                        border-right: 1px solid #ccc;
+                        border-bottom: none;
+                    }
+                    padding: 10px;
+                    cursor: pointer;
+                    position: relative;
+                    background-color: rgb(255, 255, 255);
+                    border-bottom: none;
+                    border-top: none;
+                    border-left: 1px solid #ccc;
+                    border-right: 1px solid #ccc;
+                    &:last-child {
+                        border-radius: 0px 0px 5px 5px;
+                        border-top: none;
+                        border-bottom: 1px solid #ccc;
+                        border-left: 1px solid #ccc;
+                        border-right: 1px solid #ccc;
+                    }
+                    &:hover {
+                        background-color: #e7e7e7;
+                        &:after {
+                            content: '';
+                            cursor: default;
+                            display: block;
+                            position: absolute;
+                            top: 0px;
+                            right: -361px;
+                            width: 300px;
+                            padding: 30px;
+                            background-color: #e7e7e7;
+                            border-radius: 5px;
+                        }
+                    }
+                }
+                [data-comment="junior"] {
+                    &:hover {
+                        &:after {
+                            content: 'Підійде для новачків у сфері без досвіду у програмуванні. Усьому навчимо з нуля.';
+                        }
+                    }
+                }
+                [data-comment="middle"] {
+                    &:hover {
+                        &:after {
+                            content: 'Підійде тим, хто має певний досвід. Починав навчатись, але не впевнений ще у своїх знаннях, хоче підтягнути їх.';
+                        }
+                    }
+                }
+                [data-comment="senior"] {
+                    &:hover {
+                        &:after {
+                            content: "Підійде тим, хто вже має комерційний досвід у сфері, але відчуває, що йому не достатньо знань для зросту у кар'єрі.";
+                        }
+                    }
+                }
+            }
+
+            &-selected {
+                height: var(--select-height);
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                cursor: pointer;
+                text-align: center;
+            }
+        }
+        
+        &__choose-day {
+            display: flex;
+            flex-direction: column;
+            margin-top: 20px;
+            &__calendar {
+                text-align: center;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                margin-top: 10px;
+                font-weight: 300;
+                width: var(--select-width);
+                height: var(--select-height);
+                outline: none;
+            }
+        }
+
+        &__choose-time {
+            margin-top: 20px;
+            &-times {
+                margin-top: 5px;
+                width: var(--default-input-width);
+                ul {
+                    list-style: none;
+                    display: flex;
+                    flex-wrap: wrap;
+                    li {
+                        transition: 0.5s all;
+                        cursor: pointer;
+                        text-align: center;
+                        min-width: 50px;
+                        margin-top: 5px;
+                        padding: 5px;
+                        margin-right: 5px;
+                        background: #e7e7e7;
+                        border-radius: 30px;
+                        &.active {
+                            background: #a7a7a7;
+                        }
+                    }
+                }
+            }
+        }
+
+        &__email, &__name {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            input {
+                transition: 0.5s all;
+                margin-top: 10px;
+                border: 1px solid var(--default-border-color);
+                border-radius: var(--default-border-radius);
+                width: var(--default-input-width);
+                height: var(--select-height);
+                font-weight: 300;
+                padding: 0px 10px;
+                outline: none;
+            }
+        }
+        
+        &__descr {
+            text-align: center;
+            width: 500px;
+            font-size: 20px;
+            margin: 0 auto;
+        }
+
+    }
+}

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WordPress</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="css/style.min.css">
     <link rel="apple-touch-icon" sizes="76x76" href="icons/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon/favicon-32x32.png">
@@ -15,6 +16,75 @@
     <meta name="theme-color" content="#ffffff">
 </head>
 <body>
+    <section class="window-manager">
+        <div class="window-manager__window window-manager__window_book">
+            <div class="window-manager__window__close window-manager__window__close_book">
+                <span class="icon-mac_close_btn"><span class="path1"></span><span class="path2"></span></span>
+            </div>
+            <form class="window-manager__window__form">
+                <div class="window-manager__window__lesson-type">
+                    <label for="lesson-type">Оберіть цікавий для вас курс:</label>
+                    <div class="window-manager__window__lesson-type-select" id="lesson-type">
+                        <div class="window-manager__window__lesson-type-selected"></div>
+                        <ul>
+                            <li data-comment="junior">WordPress Junior</li>
+                            <li data-comment="middle">WordPress Middle</li>
+                            <li data-comment="senior">WordPress Senior</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="window-manager__window__choose-day">
+                    <label for="calendar">Оберіть зручний день вебінару:</label>
+                    <input class="window-manager__window__choose-day__calendar" id="calendar"></input>
+                </div>
+
+                <div class="window-manager__window__choose-time">
+                    <label>Оберіть зручний час вебінару:</label>
+                    <div class="window-manager__window__choose-time-times">
+                        <ul>
+                            <li>8:00</li>
+                            <li>9:00</li>
+                            <li>10:00</li>
+                            <li>11:00</li>
+                            <li>12:00</li>
+                            <li>13:00</li>
+                            <li>14:00</li>
+                            <li>15:00</li>
+                            <li>16:00</li>
+                            <li>17:00</li>
+                            <li>18:00</li>
+                            <li>19:00</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="window-manager__window__name">
+                    <label for="name">Вас звати:</label>
+                    <input type="text" id="name" required>
+                </div>
+
+                <div class="window-manager__window__email">
+                    <label for="email">Ваш e-mail:</label>
+                    <input type="text" id="email" required>
+                </div>
+
+                <div class="window-manager__window__submit">
+                    <button class="book-btn book-btn_submit">Записатись</button>
+                </div>
+            </form>
+        </div>
+        <div class="window-manager__window window-manager__window_booked">
+            <div class="window-manager__window__close window-manager__window-close_booked"><span class="icon-mac_close_btn"><span class="path1"></span><span class="path2"></span></span></div>
+
+            <div class="window-manager__window__descr">Дякую, що записались, ваш вебінар відбудеться: 30 листопада о 15:00. Посилання на вебінар прийде на електронну пошту.😊</div>
+            
+            <div class="window-manager__window__submit">
+                <button class="book-btn book-btn_submit">Зробити ще запис</button>
+            </div>
+        </div>
+    </section>
+
+
     <section class="main">
         <div class="container">
             <div class="logo">
@@ -148,6 +218,8 @@
     </footer>
 
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/flatpickr.min.js"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/uk.js"></script>
     <script src="js/script.js"></script>
 </body>
 </html>

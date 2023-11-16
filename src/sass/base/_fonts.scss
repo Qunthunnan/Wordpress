@@ -55,3 +55,40 @@
     url("../fonts/RobotoCondensedRegular.ttf") format("truetype");
     font-weight: 400;
   }
+
+  @font-face {
+    font-family: 'icomoon';
+    src:  url('../fonts/icomoon.eot?5h7f89');
+    src:  url('../fonts/icomoon.eot?5h7f89#iefix') format('embedded-opentype'),
+      url('../fonts/icomoon.ttf?5h7f89') format('truetype'),
+      url('../fonts/icomoon.woff?5h7f89') format('woff'),
+      url('../fonts/icomoon.svg?5h7f89#icomoon') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+  }
+  
+  [class^="icon-"], [class*=" icon-"] {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'icomoon' !important;
+    speak: never;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+  
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  .icon-mac_close_btn .path1:before {
+    content: "\e900";
+    color: rgb(154, 0, 2);
+  }
+  .icon-mac_close_btn .path2:before {
+    content: "\e901";
+    margin-left: -1em;
+    color: rgb(254, 87, 82);
+  }
