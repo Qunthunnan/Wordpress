@@ -148,15 +148,19 @@ window.addEventListener('DOMContentLoaded', () => {
             }
         },
 
-        createLesson: function (lessonType, lessonTime, maxUsers, user, users) {
+        createLesson: function (lessonType, lessonTime, user, maxUsers) {
+            debugger;
             for(let i in this.availableLessonTypes) {
-                if(lessonType == i) {
+                if(lessonType == this.availableLessonTypes[i]) {
+                    this.lessonType = lessonType;
                     break;
                 }
-                console.log('Type Lesson not allowed, use allowed lesson type');
-                return undefined
             }
-            this.lessonType = lessonType;
+
+            if(!this.lessonType) {
+                console.log('Type Lesson not allowed, use allowed lesson type');
+                return undefined;
+            }
 
             if(lessonTime.getDate()) {
                 this.lessonTime = lessonTime;
@@ -165,20 +169,14 @@ window.addEventListener('DOMContentLoaded', () => {
                 return undefined
             }
 
-            if(maxUsers && typeof(maxUsers) == 'number') {
-                this.maxUsers = maxUsers;
-            } else {
-                maxUsers = 20;
-            }
-
             if(user.userName) {
                 this.lessonUsers.push(user);
             }
 
-            if(users[0].userName) {
-                for(let i in users) {
-                    this.lessonUsers.push(users[i]);
-                }
+            if(maxUsers && typeof(maxUsers) == 'number') {
+                this.maxUsers = maxUsers;
+            } else {
+                maxUsers = 20;
             }
 
             return this;
@@ -220,6 +218,7 @@ window.addEventListener('DOMContentLoaded', () => {
                         return this.lessons[i];
                     } else {
                         console.log('Lesson is not found');
+                        return undefined;
                     }
                 }
             } else {
@@ -232,7 +231,7 @@ window.addEventListener('DOMContentLoaded', () => {
             if(user.userName) {
                 for(let i in this.allUsers) {
                     if(user.email == this.allUsers[i].email) {
-                        return true;
+                        return i;
                     } else {
                         return false;
                     }
@@ -242,16 +241,37 @@ window.addEventListener('DOMContentLoaded', () => {
             }
         },
 
+        isExistsLesson: function (lessonTime) {
+            if(lessonTime.getDate()) {
+                for(let i in this.lessons) {
+                    if(lessonTime == this.lessons[i]) {
+                        console.log(`Warning! Lesson ${lessonTime} is exists`);
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            } else {
+                console.log('Date is icorrect');
+                return false;
+            }
+        },
+
         bookUser: function (user, lessonTime) {
             if(user.userName) {
                 if(lessonTime.getDate()) {
-                    for(let i in this.lessons) {
-                        if(lessonTime == this.lessons[i].lessonTime) {
-                            this.allUsers.push(user);
-                            this.lessons[i].addUser(user);
-                        } else {
-                            console.log(`Lesson ${lessonTime} is not found`);
+                    let answer = this.isRegistered(user);
+                    if(!answer) {
+                        for(let i in this.lessons) {
+                            if(lessonTime == this.lessons[i].lessonTime) {
+                                this.allUsers.push(user);
+                                this.lessons[i].addUser(user);
+                            } else {
+                                console.log(`Lesson ${lessonTime} is not found`);
+                            }
                         }
+                    } else {
+                        console.log(`This user ${answer} ${user.userName} ${user.userEmail} already exists`);
                     }
                 } else {
                     console.log('Date is icorrect');
@@ -259,13 +279,22 @@ window.addEventListener('DOMContentLoaded', () => {
             } else {
                 console.log('User Data is corrupted');
             }
+        },
+
+        addLesson: function (lessonType, lessonTime, user, maxUsers) {
+            let result = lesson.createLesson(lessonType, lessonTime, user, maxUsers);
+            if (result) {
+                this.lessons.push(result);
+            }
         }
     }
 
 
-    for(let i = 0; i < 10; i++) {
-        console.log(generateRandomString(3, 10));
-    }
+    // for(let i = 0; i < 10; i++) {
+    //     console.log(generateRandomString(3, 10));
+    // }
+
+    console.log(lesson.createLesson('junior'));
     
 
     // scroll 
