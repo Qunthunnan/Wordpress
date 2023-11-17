@@ -103,9 +103,11 @@ window.addEventListener('DOMContentLoaded', () => {
                 return undefined;
             }
 
-            if(bookTime.getDate()) {
-                this.userBook = bookTime;
-            } else {
+            try {
+                if(bookTime.getDate()) {
+                    this.userBook = bookTime;
+                }
+            } catch (error) {
                 console.log('Book Date icorrect');
             }
             return this;
@@ -204,18 +206,21 @@ window.addEventListener('DOMContentLoaded', () => {
             return result;
         },
 
-        getFreeLessonsHoursOnDate: function(date) {
+        getFreeLessonsHoursOnDay: function(date) {
             let result = [];
-            if(date.getDate()) {
-                for(let i in this.lessons) {
-                    if(this.lessons[i].isFree() && this.lessons[i].lessonTime.getDate() == date.getDate() || this.lessons[i].lessonTime.getMonth() == date.getMonth() || this.lessons[i].lessonTime.getFullYear() == date.getFullYear()) {
-                        result.push(this.lessons[i].getHours());
+            try {
+                if(date.getDate()) {
+                    for(let i in this.lessons) {
+                        if(this.lessons[i].isFree() && this.lessons[i].lessonTime.getDate() == date.getDate() || this.lessons[i].lessonTime.getMonth() == date.getMonth() || this.lessons[i].lessonTime.getFullYear() == date.getFullYear()) {
+                            result.push(this.lessons[i].getHours());
+                        }
                     }
+                    return result;
                 }
-                return result;
+            } catch (error) {
+                console.log('iccorrect Date');
+                return undefined;
             }
-            console.log('iccorrect Date');
-            return undefined;
         },
 
         getLessonByDate: function(date) {
