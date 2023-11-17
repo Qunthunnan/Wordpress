@@ -113,7 +113,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     const lesson = {
-        availableLessonTypes: ['junior, middle, senior'],
+        availableLessonTypes: ['junior', 'middle', 'senior'],
         lessonType: '',
         lessonUsers: [],
         lessonTime: '',
@@ -162,16 +162,23 @@ window.addEventListener('DOMContentLoaded', () => {
                 return undefined;
             }
 
-            if(lessonTime.getDate()) {
-                this.lessonTime = lessonTime;
-            } else {
-                console.log('lessonTime is empty');
+            try {
+                if(lessonTime.getDate()) {
+                    this.lessonTime = lessonTime;
+                }
+            } catch (error) {
+                console.log('lessonTime is empty or corrupted');
                 return undefined
             }
 
-            if(user.userName) {
-                this.lessonUsers.push(user);
+            try {
+                if(user.userName) {
+                    this.lessonUsers.push(user);
+                }
+            } catch (error) {
+                
             }
+
 
             if(maxUsers && typeof(maxUsers) == 'number') {
                 this.maxUsers = maxUsers;
@@ -294,7 +301,7 @@ window.addEventListener('DOMContentLoaded', () => {
     //     console.log(generateRandomString(3, 10));
     // }
 
-    console.log(lesson.createLesson('junior'));
+    console.log(lesson.createLesson('junior', new Date()));
     
 
     // scroll 
