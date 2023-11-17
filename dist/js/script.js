@@ -84,11 +84,19 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     const user = {
+        id,
         userName: '',
         userEmail: '',
         userBook: '',
 
-        createUser: function (name, email, bookTime) {
+        createUser: function (id, name, email, bookTime) {
+            if(typeof(id) == 'number' && id >= 0 && Math.round(id) == id) {
+                this.id = id;
+            } else { 
+                console.log('Lesson id is wrong');
+                return undefined;
+            }
+
             if(name) {
                 this.userName = name;
             } else {
@@ -115,6 +123,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     const lesson = {
+        id,
         availableLessonTypes: ['junior', 'middle', 'senior'],
         lessonType: '',
         lessonUsers: [],
@@ -129,29 +138,42 @@ window.addEventListener('DOMContentLoaded', () => {
             }
         },
 
+        getLessonId: function() {
+            return this.id;
+        },
+
         getLessonType: function () {
-            return this.lessonType
+            return this.lessonType;
         },
 
         getLessonTime: function () {
-            return this.lessonTime
+            return this.lessonTime;
         },
 
         addUser: function (user) {
-            if(user.userName) {
-                if(this.isFree()) {
-                    this.lessonUsers.push(user);
-                } else {
-                    console.log(`Lesson ${this.lessonTime} is full`);
+            try {
+                if(user.userName) {
+                    if(this.isFree()) {
+                        this.lessonUsers.push(user);
+                    } else {
+                        console.log(`Lesson ${this.lessonTime} is full`);
+                    }
                 }
-                
-            } else {
+            } catch (error) {
                 console.log('User data is broken');
             }
         },
 
-        createLesson: function (lessonType, lessonTime, user, maxUsers) {
+        createLesson: function (id, lessonType, lessonTime, user, maxUsers) {
             debugger;
+
+            if(typeof(id) == 'number' && id >= 0 && Math.round(id) == id) {
+                this.id = id;
+            } else { 
+                console.log('Lesson id is wrong');
+                return undefined;
+            }
+
             for(let i in this.availableLessonTypes) {
                 if(lessonType == this.availableLessonTypes[i]) {
                     this.lessonType = lessonType;
@@ -185,11 +207,11 @@ window.addEventListener('DOMContentLoaded', () => {
             if(maxUsers && typeof(maxUsers) == 'number') {
                 this.maxUsers = maxUsers;
             } else {
-                maxUsers = 20;
+                this.maxUsers = 20;
             }
 
             return this;
-        }
+        },
     }
 
     const timetable = {
@@ -224,71 +246,76 @@ window.addEventListener('DOMContentLoaded', () => {
         },
 
         getLessonByDate: function(date) {
-            if(date.getDate()) {
-                for(let i in this.lessons) {
-                    if(this.lessons[i].lessonTime = date) {
-                        return this.lessons[i];
-                    } else {
-                        console.log('Lesson is not found');
-                        return undefined;
+            try {
+                if(date.getDate()) {
+                    for(let i in this.lessons) {
+                        if(this.lessons[i].lessonTime = date) {
+                            return this.lessons[i];
+                        } else {
+                            console.log('Lesson is not found');
+                            return undefined;
+                        }
                     }
-                }
-            } else {
+                }                 
+            } catch (error) {
                 console.log('iccorrect Date');
                 return undefined;
             }
         }, 
         
         isRegistered: function(user) {
-            if(user.userName) {
-                for(let i in this.allUsers) {
-                    if(user.email == this.allUsers[i].email) {
-                        return i;
-                    } else {
-                        return false;
+            try {
+                if(user.userName) {
+                    for(let i in this.allUsers) {
+                        if(user.email == this.allUsers[i].email) {
+                            return i;
+                        }
                     }
+                    return false;
                 }
-            } else {
+            } catch (error) {
                 console.log('User Data is corrupted');
             }
+
         },
 
         isExistsLesson: function (lessonTime) {
-            if(lessonTime.getDate()) {
-                for(let i in this.lessons) {
-                    if(lessonTime == this.lessons[i]) {
-                        console.log(`Warning! Lesson ${lessonTime} is exists`);
-                        return true;
-                    } else {
-                        return false;
+            try {
+                if(lessonTime.getDate()) {
+                    for(let i in this.lessons) {
+                        if(lessonTime == this.lessons[i]) {
+                            console.log(`Warning! Lesson ${lessonTime} is exists`);
+                            return true;
+                        } else {
+                            return false;
+                        }
                     }
                 }
-            } else {
+            } catch (error) {
                 console.log('Date is icorrect');
                 return false;
             }
         },
 
-        bookUser: function (user, lessonTime) {
-            if(user.userName) {
-                if(lessonTime.getDate()) {
-                    let answer = this.isRegistered(user);
-                    if(!answer) {
-                        for(let i in this.lessons) {
-                            if(lessonTime == this.lessons[i].lessonTime) {
-                                this.allUsers.push(user);
-                                this.lessons[i].addUser(user);
+        bookUser: function (user, id) {
+            try {
+                if(user.userName) {
+                    if(typeof(id) == 'number' && id >= 0 && Math.round(id) == id) {
+                        if(this.lessons[id]) {
+                            let answer = this.isRegistered(user);
+                            if(!answer) {
+                                this.lessons[id].addUser(user);
                             } else {
-                                console.log(`Lesson ${lessonTime} is not found`);
+                                console.log(`This user ${answer} ${user.userName} ${user.userEmail} already exists`);
                             }
+                        } else {
+                            console.log('Lesson is not found by id');
                         }
                     } else {
-                        console.log(`This user ${answer} ${user.userName} ${user.userEmail} already exists`);
+                        console.log('Lesson id is wrong');
                     }
-                } else {
-                    console.log('Date is icorrect');
                 }
-            } else {
+            } catch (error) {
                 console.log('User Data is corrupted');
             }
         },
