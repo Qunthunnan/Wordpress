@@ -17,8 +17,8 @@ window.addEventListener('DOMContentLoaded', () => {
     //  
 
     function generateRandomString(minLength, maxLength) {
+        let length = 0;
         if(maxLength) {
-            let length = 0;
             do {
                 length = Math.floor(Math.random()*10);
             } while(length < minLength || length > maxLength)
@@ -44,113 +44,186 @@ window.addEventListener('DOMContentLoaded', () => {
         date.setMilliseconds(0);
     }
 
-    function generateRandomDateTime() {
-        var currentDate = new Date(); // Поточна дата та час
-        var randomDays = Math.floor(Math.random() * 30); // Випадкова кількість днів в межах 0-29
-        var randomHours = Math.floor(Math.random() * (19 - 8 + 1)) + 8; // Випадкова кількість годин в межах 8-19
-        var futureDate = new Date(currentDate.getTime() + randomDays * 24 * 60 * 60 * 1000); // Додаємо випадкову кількість мілісекунд
-        futureDate.setHours(randomHours, 0, 0, 0); // Встановлюємо випадкову годину, хвилину та секунду
+    function generateRandomDateTime(minDate, maxDate, minHour, maxHour) {
+        let currentDate = new Date();
+        try {
+            if(minDate.getTime()) {
+                currentDate = new Date(minDate);
+            }
+        } catch (error) {
+            
+        } // Мінімальна дата, якщо не вказана, то від зараз)
+        
+        let days = 30;
+        try {
+            if(maxDate.getTime()) {
+                days = new Date(maxDate.getTime() - currentDate.getTime()).getTime() / 1000 / 60 / 60 / 24;
+            }
+        } catch (error) {
+        }
+
+        if(!minHour && minHour != 0) {
+            minHour = 8;
+        }
+
+        if(!maxHour && maxHour != 0) {
+            maxHour = 19;
+        }
+         
+        var randomDays = Math.floor(Math.random() * days); // Випадкова кількість днів в межах 0-days
+        var randomHours = Math.floor(Math.random() * (maxHour - minHour + 1)) + minHour; // Випадкова кількість годин в межах 8-19
+        var futureDate = new Date(currentDate.getTime() + randomDays * 24 * 60 * 60 * 1000); // Формуємо сгенеровану дату через поточну дату + згенерована кількість днів*24години*60хв*60сек*1000мс (маніпулуємо по факту міллісекундами)
+        futureDate.setHours(randomHours, 0, 0, 0); // Встановлюємо згенеровану рандомного годину, 0хв:0сек:0мс
     
         return futureDate;
     }
 
-    function generateUser() {
+    function generateUserData() {
         let userName = generateRandomString(3, 10);
         let userEmail = `${generateRandomString(5, 10)}@mail.com`;
-        let book = generateRandomDateTime();
 
-        return user.createUser(userName, userEmail, book);
+        return [userName, userEmail];
     }
 
-    function generateLessons() {
-        let resultSchedule = [];
+    function generateLessons(count) {
+        if(!count) {
+            count = 360;
+        }
         let curDate = new Date();
         let genDate = new Date(curDate.getTime() + 1 * 60 * 60 * 1000);
         const minWorkHour = 8,
               maxWorkHour = 19;
         genDate.setMinutes(0, 0, 0);
-        for(let i = 0; i < 360; i++) {
+        for(let i = 0; i < count; i++) {
             if(genDate.getHours() <= maxWorkHour && genDate.getHours() >= minWorkHour) {
-                
+                timetable.addLesson(timetable.availableLessonTypes[Math.floor(Math.random() * (2 - 0 + 1)) + 0], genDate);
+            } else {
+                i--;
             }
+            genDate.setTime(genDate.getTime()+ 1 * 60 * 60 * 1000);
         }
     }
 
-    function scheduleGeneration(timetable) {
-        let lessons = [],
-            users = [];
-        const availableLessonTypes =  ['junior, middle, senior'];
-
-    }
-
-    const user = {
-        id,
-        userName: '',
-        userEmail: '',
-        userBook: '',
-
-        createUser: function (id, name, email, bookTime) {
-            if(typeof(id) == 'number' && id >= 0 && Math.round(id) == id) {
-                this.id = id;
-            } else { 
-                console.log('Lesson id is wrong');
-                return undefined;
+    function scheduleGeneration(density, minDate, maxDate) {
+        let getFreeLessonsMethod;
+        if(!density || density > 100 || density < 1 || Math.floor(density) != density) {
+            density = 50;
+        }
+        let bookTargetCount = 0;
+        try {
+            minDate.getDate();
+            maxDate.getDate();
+            getFreeLessonsMethod = (minDate, maxDate) => {
+                let result = timetable.getFreeLessonsByRange(minDate, maxDate);
+                return result;
             }
+        } catch (error) {
+            getFreeLessonsMethod = () => {let result = timetable.getFreeLessons(); return result};
+        }
+        
+        curentFreeLessons = getFreeLessonsMethod(minDate, maxDate);
+        for(let i in curentFreeLessons) {
+            bookTargetCount += curentFreeLessons[i].getFreeSlotsCount();
+        }
 
-            if(name) {
-                this.userName = name;
-            } else {
-                console.log('Name is not defined');
-                return undefined;
-            }
+        bookTargetCount *= density/100;
+        bookTargetCount = Math.floor(bookTargetCount);
 
-            if(email) {
-                this.userEmail = email;
-            } else {
-                console.log('Email is not defined');
-                return undefined;
-            }
-
-            try {
-                if(bookTime.getDate()) {
-                    this.userBook = bookTime;
-                }
-            } catch (error) {
-                console.log('Book Date icorrect');
-            }
-            return this;
+        debugger;
+        for(let i = 0; i < bookTargetCount; i++) {
+            let randFreeLessonId = getFreeLessonsMethod(minDate, maxDate)[Math.floor(Math.random() * (getFreeLessonsMethod(minDate, maxDate).length))].id;
+            timetable.bookUser(...generateUserData(), randFreeLessonId);
         }
     }
 
-    const lesson = {
-        id,
-        availableLessonTypes: ['junior', 'middle', 'senior'],
-        lessonType: '',
-        lessonUsers: [],
-        lessonTime: '',
-        maxUsers: 0,
+    function User (id, userName, userEmail, userBookId) {
 
-        isFree: function () {
+        if(typeof(id) == 'number' && id >= 0 && Math.round(id) == id) {
+            this.id = id;
+        } else { 
+            console.log('User id is wrong');
+            return undefined;
+        }
+
+        if(userName) {
+            this.userName = userName;
+        } else {
+            console.log('Name is not defined');
+            return undefined;
+        }
+
+        if(userEmail) {
+            this.userEmail = userEmail;
+        } else {
+            console.log('Email is not defined');
+            return undefined;
+        }
+
+        if(typeof(userBookId) == 'number' && userBookId >= 0 && Math.round(userBookId) == userBookId) {
+            this.userBookId = userBookId;
+        } else { 
+            console.log('Lesson id is wrong');
+            return undefined;
+        }
+    }
+
+    function Lesson (lessonId, lessonType, lessonTime, maxUsers) {
+        if(typeof(lessonId) == 'number' && lessonId >= 0 && Math.round(lessonId) == lessonId) {
+            this.id = lessonId;
+        } else { 
+            console.log('Lesson id is wrong');
+            return undefined;
+        }
+
+        if(lessonType) {
+            this.lessonType = lessonType;
+        } else {
+            console.log('lesson type is empty');
+            return undefined;
+        }
+        
+        try {
+            if(lessonTime.getDate()) {
+                this.lessonTime = new Date(lessonTime);
+            }
+        } catch (error) {
+            console.log('lessonTime is empty or corrupted');
+            return undefined;
+        }
+
+        if(maxUsers && typeof(maxUsers) == 'number' && Math.round(maxUsers) == maxUsers && maxUsers > 0) {
+            this.maxUsers = maxUsers;
+        } else {
+            this.maxUsers = 20;
+        }
+
+        this.lessonUsers = [];
+
+        this.isFree = function () {
             if(this.lessonUsers.length < this.maxUsers) {
                 return true;
             } else {
                 return false;
             }
-        },
+        }
 
-        getLessonId: function() {
+        this.getFreeSlotsCount = function () {
+            return this.maxUsers - this.lessonUsers.length;
+        }
+
+        this.getLessonId = function() {
             return this.id;
-        },
+        }
 
-        getLessonType: function () {
+        this.getLessonType = function () {
             return this.lessonType;
-        },
+        }
 
-        getLessonTime: function () {
+        this.getLessonTime = function () {
             return this.lessonTime;
-        },
+        }
 
-        addUser: function (user) {
+        this.addUser = function (user) {
             try {
                 if(user.userName) {
                     if(this.isFree()) {
@@ -162,59 +235,11 @@ window.addEventListener('DOMContentLoaded', () => {
             } catch (error) {
                 console.log('User data is broken');
             }
-        },
-
-        createLesson: function (id, lessonType, lessonTime, user, maxUsers) {
-            debugger;
-
-            if(typeof(id) == 'number' && id >= 0 && Math.round(id) == id) {
-                this.id = id;
-            } else { 
-                console.log('Lesson id is wrong');
-                return undefined;
-            }
-
-            for(let i in this.availableLessonTypes) {
-                if(lessonType == this.availableLessonTypes[i]) {
-                    this.lessonType = lessonType;
-                    break;
-                }
-            }
-
-            if(!this.lessonType) {
-                console.log('Type Lesson not allowed, use allowed lesson type');
-                return undefined;
-            }
-
-            try {
-                if(lessonTime.getDate()) {
-                    this.lessonTime = lessonTime;
-                }
-            } catch (error) {
-                console.log('lessonTime is empty or corrupted');
-                return undefined
-            }
-
-            try {
-                if(user.userName) {
-                    this.lessonUsers.push(user);
-                }
-            } catch (error) {
-                
-            }
-
-
-            if(maxUsers && typeof(maxUsers) == 'number') {
-                this.maxUsers = maxUsers;
-            } else {
-                this.maxUsers = 20;
-            }
-
-            return this;
-        },
+        }
     }
 
     const timetable = {
+        availableLessonTypes:  ['junior', 'middle', 'senior'],
         allUsers: [],
         lessons: [],
 
@@ -228,12 +253,33 @@ window.addEventListener('DOMContentLoaded', () => {
             return result;
         },
 
+        getFreeLessonsByRange: function(minDate, maxDate) {
+            let result = [];
+            try {
+                minDate.getDate();
+            } catch (error) {
+                minDate = new Date();
+            }
+            try {
+                maxDate.getDate();
+            } catch {
+                maxDate = minDate.fp_incr(30);
+            }
+
+            for(let i in this.lessons) {
+                if(this.lessons[i].lessonTime.getTime() >= minDate.getTime() && this.lessons[i].lessonTime.getTime() <= maxDate.getTime() && this.lessons[i].isFree()) {
+                    result.push(this.lessons[i]);
+                }
+            }
+            return result;
+        },
+
         getFreeLessonsHoursOnDay: function(date) {
             let result = [];
             try {
                 if(date.getDate()) {
                     for(let i in this.lessons) {
-                        if(this.lessons[i].isFree() && this.lessons[i].lessonTime.getDate() == date.getDate() || this.lessons[i].lessonTime.getMonth() == date.getMonth() || this.lessons[i].lessonTime.getFullYear() == date.getFullYear()) {
+                        if(this.lessons[i].isFree() && this.lessons[i].lessonTime.getDate() == date.getDate() && this.lessons[i].lessonTime.getMonth() == date.getMonth() && this.lessons[i].lessonTime.getFullYear() == date.getFullYear()) {
                             result.push(this.lessons[i].getHours());
                         }
                     }
@@ -245,15 +291,13 @@ window.addEventListener('DOMContentLoaded', () => {
             }
         },
 
-        getLessonByDate: function(date) {
+        getLessonsByDate: function(date) {
             try {
                 if(date.getDate()) {
+                    let result = [];
                     for(let i in this.lessons) {
                         if(this.lessons[i].lessonTime = date) {
-                            return this.lessons[i];
-                        } else {
-                            console.log('Lesson is not found');
-                            return undefined;
+                            result.push(this.lessons[i]);
                         }
                     }
                 }                 
@@ -268,7 +312,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 if(user.userName) {
                     for(let i in this.allUsers) {
                         if(user.email == this.allUsers[i].email) {
-                            return i;
+                            return this.allUsers[i].id;
                         }
                     }
                     return false;
@@ -279,61 +323,71 @@ window.addEventListener('DOMContentLoaded', () => {
 
         },
 
-        isExistsLesson: function (lessonTime) {
-            try {
-                if(lessonTime.getDate()) {
-                    for(let i in this.lessons) {
-                        if(lessonTime == this.lessons[i]) {
-                            console.log(`Warning! Lesson ${lessonTime} is exists`);
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }
-                }
-            } catch (error) {
-                console.log('Date is icorrect');
-                return false;
-            }
-        },
-
-        bookUser: function (user, id) {
-            try {
-                if(user.userName) {
-                    if(typeof(id) == 'number' && id >= 0 && Math.round(id) == id) {
-                        if(this.lessons[id]) {
-                            let answer = this.isRegistered(user);
-                            if(!answer) {
-                                this.lessons[id].addUser(user);
-                            } else {
-                                console.log(`This user ${answer} ${user.userName} ${user.userEmail} already exists`);
-                            }
-                        } else {
-                            console.log('Lesson is not found by id');
-                        }
+        isExistsLesson: function (lessonId) {
+                if(typeof(lessonId) == 'number' && lessonId >= 0 && Math.round(lessonId) == lessonId) {
+                    if(this.lessons[lessonId]) {
+                        return true;
                     } else {
-                        console.log('Lesson id is wrong');
+                        console.log('Lesson not founded by lesson Id');
+                        return false;
+                    }
+                }
+                console.log('Lesson Id is icorrect');
+                return false;
+        },
+
+        bookUser: function (userName, userEmail, lessonId) {
+            let userAnswer = new User(this.allUsers.length, userName, userEmail, lessonId);
+            try {
+                if(userAnswer.userEmail) {
+                    if(this.isExistsLesson(lessonId)) {
+                        if(this.lessons[lessonId].isFree()) {
+                            let checkUserReg = this.isRegistered(userAnswer);
+                            if(!checkUserReg) {
+                                this.allUsers.push(userAnswer);
+                                this.lessons[lessonId].addUser(userAnswer);
+                            } else {
+                                console.log(`This user${this.allUsers[checkUserReg]} is already registered on the lesson ${this.lessons[lessonId]}`);
+                            }
+    
+                        } else {
+                            console.log(`Lesson ${this.lessons[lessonId]} is full`);
+                        }
                     }
                 }
             } catch (error) {
-                console.log('User Data is corrupted');
+                
             }
         },
 
-        addLesson: function (lessonType, lessonTime, user, maxUsers) {
-            let result = lesson.createLesson(lessonType, lessonTime, user, maxUsers);
-            if (result) {
+        addLesson: function (lessonType, lessonTime, maxUsers) {
+            let result = new Lesson(this.lessons.length, lessonType, lessonTime, maxUsers);
+            try {
+                result.isFree();
                 this.lessons.push(result);
+            } catch (error) {
+                
             }
         }
     }
 
+    // 
+    // generateLessons(300);
+    // console.dir(timetable);
 
-    // for(let i = 0; i < 10; i++) {
-    //     console.log(generateRandomString(3, 10));
-    // }
+    // let curD = new Date(),
+    //     minD = new Date(curD.getTime() - (17 * 24 * 60 * 60 * 1000) - (15 * 60 * 60 * 1000));
+    //     minD.setMinutes(0, 0, 0);
+    //     maxD = new Date(curD.getTime() + (13 * 24 * 60 * 60 * 1000) - (15 * 60 * 60 * 1000));
+    //     maxD.setMinutes(0, 0, 0);
 
-    console.log(lesson.createLesson('junior', new Date()));
+    generateLessons(360);
+    scheduleGeneration(98, new Date(), new Date(new Date().fp_incr(6).setHours(23,59,59,999)));
+    scheduleGeneration(99, new Date().fp_incr(7), new Date(new Date().fp_incr(29).setHours(23,59,59,999)));
+
+    for(let i in timetable.lessons) {
+        console.log(`${timetable.lessons[i].lessonTime}: ${timetable.lessons[i].lessonUsers.length} / ${timetable.lessons[i].maxUsers}`);
+    }
     
 
     // scroll 
