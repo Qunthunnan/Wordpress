@@ -16,6 +16,9 @@ window.addEventListener('DOMContentLoaded', () => {
     //що зберігається на фронті - чи записався вже користувач
     //  
 
+
+    //backend simulation
+
     function generateRandomString(minLength, maxLength) {
         let length = 0;
         if(maxLength) {
@@ -85,7 +88,7 @@ window.addEventListener('DOMContentLoaded', () => {
         return [userName, userEmail];
     }
 
-    function generateLessons(count) {
+    function generateLessonsByCount(count) {
         if(!count) {
             count = 360;
         }
@@ -96,11 +99,36 @@ window.addEventListener('DOMContentLoaded', () => {
         genDate.setMinutes(0, 0, 0);
         for(let i = 0; i < count; i++) {
             if(genDate.getHours() <= maxWorkHour && genDate.getHours() >= minWorkHour) {
-                timetable.addLesson(timetable.availableLessonTypes[Math.floor(Math.random() * (2 - 0 + 1)) + 0], genDate);
+                timetable.addLesson(timetable.availableLessonTypes[Math.floor(Math.random() * (2 - 0 + 1)) + 0].lessonType, genDate);
             } else {
                 i--;
             }
             genDate.setTime(genDate.getTime()+ 1 * 60 * 60 * 1000);
+        }
+    }
+
+    function generateLessonsByDate(minDate, maxDate, minWorkHour, maxWorkHour) {
+        try {
+            minDate.getDate();
+            maxDate.getDate();
+            if(!minWorkHour && minWorkHour != 0 || minWorkHour < 0 || typeof(minWorkHour) != 'number' || Math.floor(minWorkHour) != minWorkHour) {
+                minWorkHour = 8;
+            }
+
+            if(!maxWorkHour || maxWorkHour < 0 || typeof(maxWorkHour) != 'number' || Math.floor(maxWorkHour) != maxWorkHour) {
+                maxWorkHour = 19;
+            }
+            
+            genDate = new Date(new Date(minDate.getTime() + 1 * 60 * 60 * 1000).setMinutes(0, 0, 0));
+            
+            while(genDate.getTime() >= minDate.getTime() && genDate.getTime() <= maxDate.getTime()) {
+                if(genDate.getHours() >= minWorkHour && genDate.getHours() <= maxWorkHour) {
+                    timetable.addLesson(timetable.availableLessonTypes[Math.floor(Math.random() * timetable.availableLessonTypes.length)].lessonType, genDate);
+                }
+                genDate = new Date(new Date(genDate.getTime() + 1 * 60 * 60 * 1000));
+            }
+        } catch (error) {
+            console.log('Icorrect min or max date');
         }
     }
 
@@ -129,7 +157,6 @@ window.addEventListener('DOMContentLoaded', () => {
         bookTargetCount *= density/100;
         bookTargetCount = Math.floor(bookTargetCount);
 
-        debugger;
         for(let i = 0; i < bookTargetCount; i++) {
             let randFreeLessonId = getFreeLessonsMethod(minDate, maxDate)[Math.floor(Math.random() * (getFreeLessonsMethod(minDate, maxDate).length))].id;
             timetable.bookUser(...generateUserData(), randFreeLessonId);
@@ -238,12 +265,71 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    const timetable = {
-        availableLessonTypes:  ['junior', 'middle', 'senior'],
-        allUsers: [],
-        lessons: [],
+    function LessonType (lessonType, title, message) {
+        if (lessonType && typeof(lessonType) === 'string') {
+            this.lessonType = lessonType;
+        } else {
+            console.log('LessonType is wrong or empty. Allowed type for lessons - string');
+            return undefined;
+        }
 
-        getFreeLessons: function() {
+        if (title && typeof(title) === 'string') {
+            this.title = title;
+        } else {
+            console.log('Lesson type title is wrong or empty. Allowed type for title - string');
+            return undefined;
+        }
+
+        if (message && typeof(message) === 'string') {
+            this.message = message;
+        } else {
+            console.log('Lesson type message is wrong or emty. Allowed type for message - string');
+        }
+    }
+
+    function Timetable (availableLessonTypes, allUsers, lessons) {
+
+        this.availableLessonTypes = [];
+        try {
+            if(typeof(availableLessonTypes[0].lessonType) === 'string') {
+                for(let i in availableLessonTypes) {
+                    this.availableLessonTypes.push(availableLessonTypes[i]);
+                }
+            } else {
+                this.availableLessonTypes.push(new LessonType('junior', 'WordPress Junior', 'Підійде для новачків у сфері без досвіду у програмуванні. Усьому навчимо з нуля.'));
+                this.availableLessonTypes.push(new LessonType('middle', 'WordPress Middle', 'Підійде тим, хто має певний досвід. Починав навчатись, але не впевнений ще у своїх знаннях, хоче підтягнути їх.'));
+                this.availableLessonTypes.push(new LessonType('senior', 'WordPress Senior', "Підійде тим, хто вже має комерційний досвід у сфері, але відчуває, що йому не достатньо знань для зросту у кар'єрі."));
+            }
+        } catch (error) {
+            this.availableLessonTypes.push(new LessonType('junior', 'WordPress Junior', 'Підійде для новачків у сфері без досвіду у програмуванні. Усьому навчимо з нуля.'));
+            this.availableLessonTypes.push(new LessonType('middle', 'WordPress Middle', 'Підійде тим, хто має певний досвід. Починав навчатись, але не впевнений ще у своїх знаннях, хоче підтягнути їх.'));
+            this.availableLessonTypes.push(new LessonType('senior', 'WordPress Senior', "Підійде тим, хто вже має комерційний досвід у сфері, але відчуває, що йому не достатньо знань для зросту у кар'єрі."));
+        }
+ 
+        try {
+            if(allUsers[0].userName) {
+                for(let i in allUsers) {
+                    this.allUsers.push(allUsers[i]);
+                }
+            }
+        } catch (error) {
+            this.allUsers = [];
+        }
+
+        try {
+            lessons[0].isFree();
+            for(let i in lessons) {
+                this.lessons.push(allUsers[i]);
+            }
+        } catch (error) {
+            this.lessons = [];
+        }
+
+        this.getAvailableLessonTypes = function () {
+            return this.availableLessonTypes;
+        }
+
+        this.getFreeLessons = function () {
             let result = [];
             for(let i in this.lessons) {
                 if(this.lessons[i].isFree()) {
@@ -251,9 +337,9 @@ window.addEventListener('DOMContentLoaded', () => {
                 }
             }
             return result;
-        },
+        }
 
-        getFreeLessonsByRange: function(minDate, maxDate) {
+        this.getFreeLessonsByRange = function (minDate, maxDate) {
             let result = [];
             try {
                 minDate.getDate();
@@ -272,15 +358,28 @@ window.addEventListener('DOMContentLoaded', () => {
                 }
             }
             return result;
-        },
+        }
 
-        getFreeLessonsHoursOnDay: function(date) {
+        this.getFreeLessonsOnDay = function(date, lessons) {
             let result = [];
             try {
                 if(date.getDate()) {
-                    for(let i in this.lessons) {
-                        if(this.lessons[i].isFree() && this.lessons[i].lessonTime.getDate() == date.getDate() && this.lessons[i].lessonTime.getMonth() == date.getMonth() && this.lessons[i].lessonTime.getFullYear() == date.getFullYear()) {
-                            result.push(this.lessons[i].getHours());
+                    let freeLessons = [];
+                    try {
+                        lessons[0].lessonTime.getDate();
+                        for(let i in lessons) {
+                            freeLessons.push(lessons[i]); 
+                        }
+                    } catch (error) {
+                        for(let i in this.getFreeLessons()) {
+                            freeLessons.push(this.getFreeLessons()[i]);
+                        }
+                        
+                    }
+
+                    for(let i in freeLessons) {
+                        if(freeLessons[i].lessonTime.getDate() == date.getDate() && freeLessons[i].lessonTime.getMonth() == date.getMonth() && freeLessons[i].lessonTime.getFullYear() == date.getFullYear()) {
+                            result.push(freeLessons[i]);
                         }
                     }
                     return result;
@@ -289,9 +388,41 @@ window.addEventListener('DOMContentLoaded', () => {
                 console.log('iccorrect Date');
                 return undefined;
             }
-        },
+        }
 
-        getLessonsByDate: function(date) {
+        this.getFilteredFreeLessons = function (lessonType, dayDate) {
+            let typeCheck;
+            for(let i in this.availableLessonTypes) {
+                if(lessonType == this.availableLessonTypes[i].lessonType) {
+                    typeCheck = true;
+                    break;
+                }
+            }
+
+            if(typeCheck) {
+                let result = [];
+
+                for(let i in this.lessons) {
+                    if(this.lessons[i].lessonType == lessonType && this.lessons[i].isFree()) {
+                        result.push(this.lessons[i]);
+                    }
+                }
+
+                try {
+                    dayDate.getDate();
+
+                    return this.getFreeLessonsOnDay(dayDate, result);
+
+                } catch (error) {
+                    return result;
+                }
+                
+            } else {
+                console.log(`lessonType is not recognized, try first .addNewLessonType(\'${lessonType}\');`);
+            }
+        }
+
+        this.getLessonsByDate = function(date) {
             try {
                 if(date.getDate()) {
                     let result = [];
@@ -305,9 +436,9 @@ window.addEventListener('DOMContentLoaded', () => {
                 console.log('iccorrect Date');
                 return undefined;
             }
-        }, 
+        }
         
-        isRegistered: function(user) {
+        this.isRegistered = function(user) {
             try {
                 if(user.userName) {
                     for(let i in this.allUsers) {
@@ -320,10 +451,9 @@ window.addEventListener('DOMContentLoaded', () => {
             } catch (error) {
                 console.log('User Data is corrupted');
             }
+        }
 
-        },
-
-        isExistsLesson: function (lessonId) {
+        this.isExistsLesson = function (lessonId) {
                 if(typeof(lessonId) == 'number' && lessonId >= 0 && Math.round(lessonId) == lessonId) {
                     if(this.lessons[lessonId]) {
                         return true;
@@ -334,9 +464,9 @@ window.addEventListener('DOMContentLoaded', () => {
                 }
                 console.log('Lesson Id is icorrect');
                 return false;
-        },
+        }
 
-        bookUser: function (userName, userEmail, lessonId) {
+        this.bookUser = function (userName, userEmail, lessonId) {
             let userAnswer = new User(this.allUsers.length, userName, userEmail, lessonId);
             try {
                 if(userAnswer.userEmail) {
@@ -358,9 +488,9 @@ window.addEventListener('DOMContentLoaded', () => {
             } catch (error) {
                 
             }
-        },
+        }
 
-        addLesson: function (lessonType, lessonTime, maxUsers) {
+        this.addLesson = function (lessonType, lessonTime, maxUsers) {
             let result = new Lesson(this.lessons.length, lessonType, lessonTime, maxUsers);
             try {
                 result.isFree();
@@ -369,26 +499,128 @@ window.addEventListener('DOMContentLoaded', () => {
                 
             }
         }
+
+        this.addNewLessonType = function (lessonTypeObj) {
+            try {
+                if(typeof(lessonTypeObj.lessonType) === 'string') {
+                    this.availableLessonTypes.push(lessonTypeObj);
+                } else {
+                    console.log('Wrong type of lesson type. Allowed type for lessons - string');
+                }
+            } catch (error) {
+                console.log('Lesson type is icorrect');
+            }   
+        }
     }
 
-    // 
-    // generateLessons(300);
-    // console.dir(timetable);
+    const timetable = new Timetable();
+    
+    let minDate = new Date(),
+        weekDate = new Date(new Date().fp_incr(6).setHours(23,59,59,999)),
+        weekDate2 = new Date().fp_incr(7),
+        monthDate = new Date(new Date().fp_incr(30).setHours(23,59,59,999));
 
-    // let curD = new Date(),
-    //     minD = new Date(curD.getTime() - (17 * 24 * 60 * 60 * 1000) - (15 * 60 * 60 * 1000));
-    //     minD.setMinutes(0, 0, 0);
-    //     maxD = new Date(curD.getTime() + (13 * 24 * 60 * 60 * 1000) - (15 * 60 * 60 * 1000));
-    //     maxD.setMinutes(0, 0, 0);
+    generateLessonsByDate(minDate, monthDate);
+    scheduleGeneration(90, minDate, weekDate);
+    scheduleGeneration(70, weekDate2, monthDate);
 
-    generateLessons(360);
-    scheduleGeneration(98, new Date(), new Date(new Date().fp_incr(6).setHours(23,59,59,999)));
-    scheduleGeneration(99, new Date().fp_incr(7), new Date(new Date().fp_incr(29).setHours(23,59,59,999)));
-
-    for(let i in timetable.lessons) {
+    for (let i in timetable.lessons) {
         console.log(`${timetable.lessons[i].lessonTime}: ${timetable.lessons[i].lessonUsers.length} / ${timetable.lessons[i].maxUsers}`);
     }
-    
+
+    console.dir(timetable);
+
+    //frontend
+
+    function findTrueParentElemByClass(eventElement, parentClass) {
+        try {
+            if(eventElement.parentNode.className == parentClass) {
+                return eventElement.parentNode;
+            } else {
+                findTrueParentElemByClass(eventElement.parentNode, parentClass);
+            }
+        } catch (error) {
+            return undefined;
+        }
+    }
+
+    function lessonTypeListFiller () {
+        let lessonTypes = [];
+        for(let i in timetable.getAvailableLessonTypes()) {
+            lessonTypes.push(timetable.getAvailableLessonTypes()[i]);
+        } 
+        
+        for(let i in lessonTypes) {
+            let listItemElement = document.createElement('li');
+            listItemElement.className = 'window-manager__window__lesson-type__item';
+            listItemElement.setAttribute('data-course-type', lessonTypes[i].lessonType);
+            let itemTitleElement = document.createElement('div');
+            itemTitleElement.className = 'window-manager__window__lesson-type__title';
+            itemTitleElement.innerText = `${lessonTypes[i].title}`;
+            listItemElement.append(itemTitleElement);
+            let itemMessageElement = document.createElement('div');
+            itemMessageElement.className = 'window-manager__window__lesson-type__message';
+            itemMessageElement.innerText = `${lessonTypes[i].message}`;
+            listItemElement.append(itemMessageElement);
+            lessonTypeSelectList.append(listItemElement);
+        }
+        lessonTypeListItems = windowManager.querySelectorAll('.window-manager__window__lesson-type__item');
+        lessonTypeListMessages = windowManager.querySelectorAll('.window-manager__window__lesson-type__message');
+    }
+
+    const windowManager = document.querySelector('.window-manager');
+    let lessonTypeSelectList = windowManager.querySelector('.window-manager__window__lesson-type__list'),
+        lessonTypeSelected = windowManager.querySelector('.window-manager__window__lesson-type-selected'),
+        lessonTypeListItems,
+        lessonTypeListMessages,
+        selectedLessonType;
+
+    lessonTypeListFiller();
+
+    lessonTypeSelected.addEventListener('click', (e) => {
+        console.log('Event enter target');
+        console.log(e.target);
+        console.log('Event enter related');
+        console.log(e.relatedTarget);
+        lessonTypeSelectList.style.display = 'block';
+    });
+
+    // lessonTypeSelected.addEventListener('mouseleave', (e) => {
+    //     console.log('Event exit target');
+    //     console.log(e.target);
+    //     console.log('Event exit related');
+    //     console.log(e.relatedTarget);
+    //     if(!e.relatedTarget.closest('.window-manager__window__lesson-type-select')) {
+    //         lessonTypeSelectList.style.display = 'none';
+    //     }
+    // });
+
+    lessonTypeListItems.forEach((element) => {
+        element.addEventListener('mouseenter', (e) => {
+            if(e.target.parentNode.className != 'window-manager__window__lesson-type__item') {
+                e.target.querySelector('.window-manager__window__lesson-type__message').classList.toggle('window-manager__window__lesson-type__message_active');
+            }
+        });
+
+        element.addEventListener('mouseleave', (e) => {
+            if(e.target.parentNode.className != 'window-manager__window__lesson-type__item') {
+                e.target.querySelector('.window-manager__window__lesson-type__message').classList.toggle('window-manager__window__lesson-type__message_active');
+            }
+        });
+
+        element.addEventListener('click', (e) => {
+            let targetElement;
+            if(e.target.className === 'window-manager__window__lesson-type__item') {
+                targetElement = e.target;
+            } else {
+                targetElement = e.target.parentNode;
+            }
+
+            targetElement.parentNode.parentNode.querySelector('.window-manager__window__lesson-type-selected').innerText = targetElement.querySelector('.window-manager__window__lesson-type__title').innerText;
+            selectedLessonType = targetElement.getAttribute('data-course-type');
+            console.log(selectedLessonType);
+        });
+    });
 
     // scroll 
 

@@ -38,19 +38,15 @@
         &__lesson-type {
             display: flex;
             flex-direction: column;
+
             &-select {
                 margin-top: 10px;
                 position: relative;
                 display: block;
                 width: var(--select-width);
-                &:hover {
-                    ul {
-                        transition: 0.5s all;
-                        display: block;
-                    }
-                }
     
                 ul {
+                    transition: 0.5s all;
                     display: none;
                     position: absolute;
                     list-style: none;
@@ -85,41 +81,23 @@
                     }
                     &:hover {
                         background-color: #e7e7e7;
-                        &:after {
-                            content: '';
-                            cursor: default;
-                            display: block;
-                            position: absolute;
-                            top: 0px;
-                            right: -361px;
-                            width: 300px;
-                            padding: 30px;
-                            background-color: #e7e7e7;
-                            border-radius: 5px;
-                        }
                     }
                 }
-                [data-comment="junior"] {
-                    &:hover {
-                        &:after {
-                            content: 'Підійде для новачків у сфері без досвіду у програмуванні. Усьому навчимо з нуля.';
-                        }
-                    }
-                }
-                [data-comment="middle"] {
-                    &:hover {
-                        &:after {
-                            content: 'Підійде тим, хто має певний досвід. Починав навчатись, але не впевнений ще у своїх знаннях, хоче підтягнути їх.';
-                        }
-                    }
-                }
-                [data-comment="senior"] {
-                    &:hover {
-                        &:after {
-                            content: "Підійде тим, хто вже має комерційний досвід у сфері, але відчуває, що йому не достатньо знань для зросту у кар'єрі.";
-                        }
-                    }
-                }
+            }
+
+            &__message {
+                display: none;
+                position: absolute;
+                top: 0px;
+                right: -301px;
+                width: 300px;
+                padding: 30px;
+                background-color: #e7e7e7;
+                border-radius: 5px;
+            }
+
+            &__message_active {
+                display: block;
             }
 
             &-selected {
