@@ -521,11 +521,11 @@ window.addEventListener('DOMContentLoaded', () => {
         monthDate = new Date(new Date().fp_incr(30).setHours(23,59,59,999));
 
     generateLessonsByDate(minDate, monthDate);
-    scheduleGeneration(90, minDate, weekDate);
-    scheduleGeneration(70, weekDate2, monthDate);
+    scheduleGeneration(99, minDate, weekDate);
+    scheduleGeneration(80, weekDate2, monthDate);
 
     for (let i in timetable.lessons) {
-        console.log(`${timetable.lessons[i].lessonTime}: ${timetable.lessons[i].lessonUsers.length} / ${timetable.lessons[i].maxUsers}`);
+        console.log(`${timetable.lessons[i].lessonTime} ${timetable.lessons[i].lessonType}: ${timetable.lessons[i].lessonUsers.length} / ${timetable.lessons[i].maxUsers}`);
     }
 
     console.dir(timetable);
@@ -568,33 +568,135 @@ window.addEventListener('DOMContentLoaded', () => {
         lessonTypeListMessages = windowManager.querySelectorAll('.window-manager__window__lesson-type__message');
     }
 
+    function showLessonTypeList (e) {
+        lessonTypeSelectList.style.display = 'block';
+    }
+
+    function hideLessonTypeList (e) {
+        isOpenedList = false;
+        lessonTypeSelectList.style.display = 'none';
+        document.removeEventListener('click', hideLessonTypeList);
+    }
+
+    function updateCalendar (selectedLessonType) {
+        let freeDays = []; 
+        for(let i in timetable.getFilteredFreeLessons(selectedLessonType)) {
+            freeDays.push(timetable.getFilteredFreeLessons(selectedLessonType)[i].lessonTime);
+        }
+        calendar = flatpickr(calendarElem, {
+            "locale": "uk",
+            altInput: true,
+            altFormat: "j F, Y",
+            dateFormat: "Y-m-d",
+            minDate: 'today',
+            maxDate: new Date().fp_incr(30),
+            enable: freeDays,
+        });
+
+        calendar.config.onChange.push(function(selectedDates) {
+            selectedDate = selectedDates[0];
+            if(!isSelectedDate) {
+                isSelectedDate = true;
+                showFreeHours(selectedLessonType, selectedDate);
+            } else {
+                updateFreeHours(selectedLessonType, selectedDate);
+            }
+         } );
+
+         if(isSelectedDate) {
+            updateFreeHours(selectedLessonType, selectedDate);
+         }
+    }
+ 
+    function showCaledar (selectedLessonType) {
+        debugger;
+        isShowedCalendar = true;
+        calendarBlock.classList.add('window-manager__window__choose-day_active');
+        updateCalendar(selectedLessonType);
+    }
+
+    function hideFreeHours () {
+        freeHoursBlock.classList.remove('window-manager__window__choose-time_active');
+        selectedDate = undefined;
+        isSelectedDate = false;
+        calendar.value = '';
+    }
+
+    function updateFreeHours (selectedLessonType, selectedDate) {
+        freeHours = [];
+        start: for(let i in timetable.getFilteredFreeLessons(selectedLessonType, selectedDate)) {
+                    for(let k in freeHours) {
+                        if(freeHours[k].getHours() === timetable.getFilteredFreeLessons(selectedLessonType, selectedDate)[i].lessonTime.getHours()) {
+                            continue start;
+                        }
+                    }
+                    freeHours.push(timetable.getFilteredFreeLessons(selectedLessonType, selectedDate)[i].lessonTime);
+                }
+        if(freeHours.length >  0) {
+            freeHoursList.innerHTML = '';
+            for(let i in freeHours) {
+                let freHourItem = document.createElement('li');
+                    freHourItem.setAttribute('data-lessonId', `${freeHours[i].lessonId}`);
+                    debugger;
+                    if(`${freeHours[i].getMinutes()}`.length > 1) {
+                        freHourItem.innerText = `${freeHours[i].getHours()}:${freeHours[i].getMinutes()}`;
+                    } else {
+                        freHourItem.innerText = `${freeHours[i].getHours()}:0${freeHours[i].getMinutes()}`;
+                    }
+                    freeHoursList.append(freHourItem);
+            }
+        } else {
+            hideFreeHours();
+        }
+
+    }
+
+    function showFreeHours (selectedLessonType, selectedDate) {
+        freeHoursBlock.classList.add('window-manager__window__choose-time_active');
+        updateFreeHours(selectedLessonType, selectedDate);
+    }
+
+
     const windowManager = document.querySelector('.window-manager');
     let lessonTypeSelectList = windowManager.querySelector('.window-manager__window__lesson-type__list'),
         lessonTypeSelected = windowManager.querySelector('.window-manager__window__lesson-type-selected'),
+        calendarBlock = windowManager.querySelector('.window-manager__window__choose-day'),
+        calendarElem = windowManager.querySelector('#calendar'),
+        freeHoursBlock = windowManager.querySelector('.window-manager__window__choose-time'),
+        freeHoursList = windowManager.querySelector('.window-manager__window__choose-time__list'),
+        calendar = flatpickr(calendarElem, {
+            "locale": "uk",
+            altInput: true,
+            altFormat: "j F, Y",
+            dateFormat: "Y-m-d",
+            minDate: 'today',
+            maxDate: new Date().fp_incr(30),
+        }),
+        isOpenedList = false,
+        isShowedCalendar = false,
+        isSelectedDate = false,
+        selectedDate,
         lessonTypeListItems,
-        lessonTypeListMessages,
-        selectedLessonType;
+        selectedLessonType = '';
 
     lessonTypeListFiller();
 
     lessonTypeSelected.addEventListener('click', (e) => {
-        console.log('Event enter target');
-        console.log(e.target);
-        console.log('Event enter related');
-        console.log(e.relatedTarget);
-        lessonTypeSelectList.style.display = 'block';
+        showLessonTypeList(e);
+        if(isOpenedList) {
+            isOpenedList = false;
+            lessonTypeSelectList.style.display = 'none';
+        } else {
+            isOpenedList = true;
+            document.addEventListener('click', (e)=>{
+                if(e.target.className != lessonTypeSelected.className) {
+                    hideLessonTypeList(e);
+                }
+            });
+        }
     });
 
-    // lessonTypeSelected.addEventListener('mouseleave', (e) => {
-    //     console.log('Event exit target');
-    //     console.log(e.target);
-    //     console.log('Event exit related');
-    //     console.log(e.relatedTarget);
-    //     if(!e.relatedTarget.closest('.window-manager__window__lesson-type-select')) {
-    //         lessonTypeSelectList.style.display = 'none';
-    //     }
-    // });
-
+    //lesson type drop down
     lessonTypeListItems.forEach((element) => {
         element.addEventListener('mouseenter', (e) => {
             if(e.target.parentNode.className != 'window-manager__window__lesson-type__item') {
@@ -618,27 +720,22 @@ window.addEventListener('DOMContentLoaded', () => {
 
             targetElement.parentNode.parentNode.querySelector('.window-manager__window__lesson-type-selected').innerText = targetElement.querySelector('.window-manager__window__lesson-type__title').innerText;
             selectedLessonType = targetElement.getAttribute('data-course-type');
-            console.log(selectedLessonType);
+            //calendar
+            if(isShowedCalendar) {
+                updateCalendar(selectedLessonType);
+            } else {
+                showCaledar(selectedLessonType);
+            }
         });
     });
 
-    // scroll 
+    //calendar
 
-    const calendarElem = document.querySelector('#calendar'),
-          calendar = flatpickr(calendarElem, {
-        "locale": "uk",
-        altInput: true,
-        altFormat: "j F, Y",
-        dateFormat: "Y-m-d",
-        minDate: 'today',
-        maxDate: new Date().fp_incr(30),
-    });
 
-    calendar.config.onChange.push(function(selectedDates, dateStr) {
-        console.dir(selectedDates);
-        selectedDates[0].setHours(17);
-        console.dir(`${selectedDates[0].getDate()}.${selectedDates[0].getMonth()}.${selectedDates[0].getFullYear()} ${selectedDates[0].getHours()}`);
-     } );
+
+    // scroll
+
+
 
 
 

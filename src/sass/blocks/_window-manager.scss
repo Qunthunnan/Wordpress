@@ -8,7 +8,10 @@
     --default-border-color: #ccc;
     --default-hover-color: #e7e7e7;
     --default-border-radius: 5px;
-    --default-input-width:300px;
+    --default-input-width: 300px;
+    --default-height-enabled: unset;
+    --default-height-disabled: 0px;
+    --default-width-disabled: 0px;
 
     position: absolute;
     top: 10%;
@@ -43,7 +46,7 @@
                 margin-top: 10px;
                 position: relative;
                 display: block;
-                width: var(--select-width);
+                width: var(--default-input-width);
     
                 ul {
                     transition: 0.5s all;
@@ -102,32 +105,35 @@
 
             &-selected {
                 height: var(--select-height);
-                padding: 10px;
+                padding: 10px 15px;
                 border: 1px solid #ccc;
                 border-radius: 5px;
                 cursor: pointer;
-                text-align: center;
             }
         }
         
         &__choose-day {
-            display: flex;
+            display: none;
             flex-direction: column;
             margin-top: 20px;
             &__calendar {
-                text-align: center;
+                padding: 0px 15px;
                 border: 1px solid #ccc;
                 border-radius: 5px;
                 margin-top: 10px;
                 font-weight: 300;
-                width: var(--select-width);
+                width: var(--default-input-width);
                 height: var(--select-height);
                 outline: none;
+            }
+            &_active {
+                display: flex;
             }
         }
 
         &__choose-time {
             margin-top: 20px;
+            display: none;
             &-times {
                 margin-top: 5px;
                 width: var(--default-input-width);
@@ -151,12 +157,16 @@
                     }
                 }
             }
+            &_active {
+                display: block;
+            }
         }
 
         &__email, &__name {
             margin-top: 20px;
             display: flex;
             flex-direction: column;
+            display: none;
             input {
                 transition: 0.5s all;
                 margin-top: 10px;
@@ -167,6 +177,9 @@
                 font-weight: 300;
                 padding: 0px 10px;
                 outline: none;
+            }
+            &_active {
+                display: block;
             }
         }
         
