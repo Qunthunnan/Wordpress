@@ -179,7 +179,27 @@
                 outline: none;
             }
             &_active {
+                display: flex;
+            }
+        }
+
+        &__submit {
+            display: none;
+            &_active {
                 display: block;
+            }
+        }
+
+        &__policy {
+            margin-top: 15px;
+            width: var(--default-input-width);
+            font-size: 13px;
+            display: none;
+            &_active {
+                display: flex;
+            }
+            input {
+                margin-right: 5px;
             }
         }
         

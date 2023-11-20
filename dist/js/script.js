@@ -579,6 +579,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateCalendar (selectedLessonType) {
+        debugger;
         let freeDays = []; 
         for(let i in timetable.getFilteredFreeLessons(selectedLessonType)) {
             freeDays.push(timetable.getFilteredFreeLessons(selectedLessonType)[i].lessonTime);
@@ -616,6 +617,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     function hideFreeHours () {
+        debugger;
         freeHoursBlock.classList.remove('window-manager__window__choose-time_active');
         selectedDate = undefined;
         isSelectedDate = false;
@@ -623,26 +625,34 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateFreeHours (selectedLessonType, selectedDate) {
-        freeHours = [];
+        debugger;
+        if(isSelectedLessonId) {
+            isSelectedLessonId = false;
+            selectedLessonId = undefined;
+            hideUserForm();
+        }
+        let freeLessons = [];
         start: for(let i in timetable.getFilteredFreeLessons(selectedLessonType, selectedDate)) {
-                    for(let k in freeHours) {
-                        if(freeHours[k].getHours() === timetable.getFilteredFreeLessons(selectedLessonType, selectedDate)[i].lessonTime.getHours()) {
+                    for(let k in freeLessons) {
+                        if(freeLessons[k].lessonTime.getHours() === timetable.getFilteredFreeLessons(selectedLessonType, selectedDate)[i].lessonTime.getHours()) {
                             continue start;
                         }
                     }
-                    freeHours.push(timetable.getFilteredFreeLessons(selectedLessonType, selectedDate)[i].lessonTime);
+                    freeLessons.push(timetable.getFilteredFreeLessons(selectedLessonType, selectedDate)[i]);
                 }
-        if(freeHours.length >  0) {
+        if(freeLessons.length >  0) {
             freeHoursList.innerHTML = '';
-            for(let i in freeHours) {
+            for(let i in freeLessons) {
                 let freHourItem = document.createElement('li');
-                    freHourItem.setAttribute('data-lessonId', `${freeHours[i].lessonId}`);
-                    debugger;
-                    if(`${freeHours[i].getMinutes()}`.length > 1) {
-                        freHourItem.innerText = `${freeHours[i].getHours()}:${freeHours[i].getMinutes()}`;
+                    freHourItem.setAttribute('data-lessonid', `${freeLessons[i].id}`);
+                    if(`${freeLessons[i].lessonTime.getMinutes()}`.length > 1) {
+                        freHourItem.innerText = `${freeLessons[i].lessonTime.getHours()}:${freeLessons[i].lessonTime.getMinutes()}`;
                     } else {
-                        freHourItem.innerText = `${freeHours[i].getHours()}:0${freeHours[i].getMinutes()}`;
+                        freHourItem.innerText = `${freeLessons[i].lessonTime.getHours()}:0${freeLessons[i].lessonTime.getMinutes()}`;
                     }
+                    freHourItem.addEventListener('click', (e)=>{
+                        timeChoose(e);
+                    });
                     freeHoursList.append(freHourItem);
             }
         } else {
@@ -652,8 +662,36 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     function showFreeHours (selectedLessonType, selectedDate) {
+        debugger;
         freeHoursBlock.classList.add('window-manager__window__choose-time_active');
         updateFreeHours(selectedLessonType, selectedDate);
+    }
+
+    function timeChoose (e) {
+        debugger;
+        if(!isSelectedLessonId) {
+            isSelectedLessonId = true;
+            showUserForm();
+        } else {
+            e.target.parentNode.querySelector(`[data-lessonid="${selectedLessonId}"]`).classList.remove(`active`);
+        }
+        e.target.classList.add('active');
+        selectedLessonId = +e.target.getAttribute('data-lessonid');
+        console.log(selectedLessonId);
+    }
+
+    function showUserForm () {
+        debugger;
+        userFormBlocksList.forEach((element)=>{
+            element.classList.add(`${element.className}_active`);
+        });
+    }
+
+    function hideUserForm () {
+        debugger;
+        for (let i = userFormBlocksList.length-1; i >= 0; i--) {
+            userFormBlocksList[i].classList.remove(`${userFormBlocksList[i].classList[0]}_active`);
+        }
     }
 
 
@@ -664,6 +702,11 @@ window.addEventListener('DOMContentLoaded', () => {
         calendarElem = windowManager.querySelector('#calendar'),
         freeHoursBlock = windowManager.querySelector('.window-manager__window__choose-time'),
         freeHoursList = windowManager.querySelector('.window-manager__window__choose-time__list'),
+        userNameBlock = windowManager.querySelector('.window-manager__window__name'),
+        userEmailBlock = windowManager.querySelector('.window-manager__window__email'),
+        userSubmitBlock = windowManager.querySelector('.window-manager__window__submit'),
+        userPolicyBlock = windowManager.querySelector('.window-manager__window__policy'),
+        userFormBlocksList = [userNameBlock, userEmailBlock, userSubmitBlock, userPolicyBlock],
         calendar = flatpickr(calendarElem, {
             "locale": "uk",
             altInput: true,
@@ -675,7 +718,9 @@ window.addEventListener('DOMContentLoaded', () => {
         isOpenedList = false,
         isShowedCalendar = false,
         isSelectedDate = false,
+        isSelectedLessonId = false,
         selectedDate,
+        selectedLessonId,
         lessonTypeListItems,
         selectedLessonType = '';
 
@@ -721,6 +766,7 @@ window.addEventListener('DOMContentLoaded', () => {
             targetElement.parentNode.parentNode.querySelector('.window-manager__window__lesson-type-selected').innerText = targetElement.querySelector('.window-manager__window__lesson-type__title').innerText;
             selectedLessonType = targetElement.getAttribute('data-course-type');
             //calendar
+            debugger;
             if(isShowedCalendar) {
                 updateCalendar(selectedLessonType);
             } else {
@@ -731,14 +777,57 @@ window.addEventListener('DOMContentLoaded', () => {
 
     //calendar
 
+// Ініціалізація Vue 3.x та VeeValidate 4.x
+    const app = Vue.createApp({
+        data() {
+        return {
+            name: '',
+            email: ''
+        };
+        },
+        setup() {
+        // Використання VeeValidate у Vue 3.x
+        const { validate, errors } = VeeValidate();
+    
+        // Реєстрація правил валідації
+        validate('required', (value) => {
+            return {
+            valid: value && value.trim() !== '',
+            message: 'Це поле обов\'язкове'
+            };
+        });
+    
+        validate('email', (value) => {
+            const emailRegex = /\S+@\S+\.\S+/;
+            return {
+            valid: emailRegex.test(value),
+            message: 'Введіть коректну адресу електронної пошти'
+            };
+        });
+    
+        return { validate, errors };
+        },
+        methods: {
+        submitForm() {
+            // Перевірка наявності помилок перед відправленням форми
+            this.validate().then((result) => {
+            if (result) {
+                // Якщо форма валідна, виконайте відповідні дії (наприклад, відправлення на сервер)
+                console.log('Форма валідна. Відправлення на сервер:', this.name, this.email);
+            } else {
+                // Якщо форма не валідна, обробте помилки
+                console.log('Форма не валідна. Виправте помилки.');
+            }
+            });
+        }
+        }
+    });
+    
+    app.use(VeeValidate);
+    app.mount('#app');
 
 
     // scroll
-
-
-
-
-
     function scroll(item) {
         $(item).click(function(){
             const _href = $(item).attr("href");
