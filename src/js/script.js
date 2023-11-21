@@ -510,7 +510,7 @@ window.addEventListener('DOMContentLoaded', () => {
         monthDate = new Date(new Date().fp_incr(30).setHours(23,59,59,999));
 
     generateLessonsByDate(minDate, monthDate);
-    scheduleGeneration(99, minDate, weekDate);
+    scheduleGeneration(100, minDate, weekDate);
     scheduleGeneration(80, weekDate2, monthDate);
 
     console.dir(timetable);
@@ -620,7 +620,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     function showLessonTypeList (e) {
-        lessonTypeSelectList.style.display = 'block';
+        lessonTypeSelectList.style.display = 'flex';
     }
 
     function hideLessonTypeList (e) {
@@ -642,15 +642,20 @@ window.addEventListener('DOMContentLoaded', () => {
             minDate: 'today',
             maxDate: new Date().fp_incr(30),
             enable: freeDays,
+            appendTo: calendarBlock
         });
 
         calendar.config.onChange.push(function(selectedDates) {
-            selectedDate = selectedDates[0];
-            if(!isSelectedDate) {
-                isSelectedDate = true;
-                showFreeHours(selectedLessonType, selectedDate);
+            if(!isReseted){
+                selectedDate = selectedDates[0];
+                if(!isSelectedDate) {
+                    isSelectedDate = true;
+                    showFreeHours(selectedLessonType, selectedDate);
+                } else {
+                    updateFreeHours(selectedLessonType, selectedDate);
+                }
             } else {
-                updateFreeHours(selectedLessonType, selectedDate);
+                isReseted = false;
             }
          } );
 
@@ -666,6 +671,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     function hideFreeHours () {
+        debugger;
         freeHoursBlock.classList.remove('window-manager__window__choose-time_active');
         selectedDate = undefined;
         isSelectedDate = false;
@@ -853,19 +859,28 @@ window.addEventListener('DOMContentLoaded', () => {
             dateFormat: "Y-m-d",
             minDate: 'today',
             maxDate: new Date().fp_incr(30),
+            appendTo: calendarBlock,
         }),
         isOpenedList = false,
         isShowedCalendar = false,
         isSelectedDate = false,
         isSelectedLessonId = false,
+        isReseted = false,
         selectedDate,
         selectedLessonId,
         lessonTypeListItems,
         openInId,
         closeInId,
-        selectedLessonType = '';
+        selectedLessonType = '',
+        firstWebinarElem = document.querySelector('.first-web-time');
 
 
+        firstWebinarElem.innerHTML = `${timetable.lessons[0].lessonTime.toLocaleDateString('uk-UA', {
+            month: 'long',
+            day: 'numeric', 
+            hour: "numeric", 
+            minute: "numeric"
+        })} за київським часом`
 //lesson type drop down
 
     openWindowBtns.forEach((element)=>{
@@ -951,25 +966,31 @@ window.addEventListener('DOMContentLoaded', () => {
                       policyValidationResult = inputValidation(policyCheckBox);
         
                 if(nameValidationResult && emailValidationResult && policyValidationResult) {
-                    let answer = timetable.bookUser(userNameInput.value, userEmailInput.value, selectedLessonId)
+                    let answer = timetable.bookUser(userNameInput.value, userEmailInput.value, selectedLessonId);
                     console.log(timetable);
                     document.querySelector('.window-manager__window__form').reset();
+                    isReseted = true;
                     if(answer === true) {
-                        windowBooked.querySelector('.window-manager__window__descr').innerText = `Дякую, що записались, ваш вебінар відбудеться: ${timetable.lessons[selectedLessonId].lessonTime.toLocaleDateString('uk-UA', {
+                        windowBooked.querySelector('.window-manager__window__descr').innerText = `Дякую, що записались, ваш вебінар відбудеться:\n ${timetable.lessons[selectedLessonId].lessonTime.toLocaleDateString('uk-UA', {
                             month: 'long',
                             day: 'numeric', 
                             hour: "numeric", 
                             minute: "numeric"
                         })}. Посилання на вебінар прийде на електронну пошту.😊`;
-                        modalOpenClose(windowBook);
-                        modalOpenClose(windowBooked, resetBookWindow);
+                        modalOpenClose(windowBook, ()=>{
+                            modalOpenClose(windowBooked, resetBookWindow);
+                        });
                     } else {
                         if(answer === 'registered') {
-                            modalSwitchWindows(windowBook, windowRegistered);
+                            modalOpenClose(windowBook, ()=>{
+                                modalOpenClose(windowRegistered, resetBookWindow);
+                            });
                         }
 
                         if(answer === false) {
-                            modalSwitchWindows(windowBook, windowError);
+                            modalOpenClose(windowBook, ()=>{
+                                modalOpenClose(windowError, resetBookWindow);
+                            });
                         }
                     }
                     
