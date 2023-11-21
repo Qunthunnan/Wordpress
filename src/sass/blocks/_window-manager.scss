@@ -1,7 +1,6 @@
 
 
 .window-manager {
-    transition: 0.5s all;
     font-weight: 300;
     --select-width: 165px;
     --select-height: 40px;
@@ -13,20 +12,31 @@
     --default-height-disabled: 0px;
     --default-width-disabled: 0px;
 
-    position: absolute;
+    display: none;
+    opacity: 0;
+    position: fixed;
     top: 10%;
     left: 50%;
     transform: translateX(-50%);
     &__window {
-        transition: 0.5s all;
         background-color: white;
         border-radius: 5px;
         padding: 30px;
         &_book {
             display: block;
+            opacity: 1;
         }
         &_booked {
             display: none;
+            opacity: 0;
+        }
+        &_registered {
+            display: none;
+            opacity: 0;
+        }
+        &_error {
+            display: none;
+            opacity: 0;
         }
 
         &__close {
@@ -190,18 +200,30 @@
             }
         }
 
+        &__validation-error {
+            color: #fe5752;
+            font-size: 13px;
+            width: var(--default-input-width);
+        }
+
         &__policy {
             margin-top: 15px;
             width: var(--default-input-width);
             font-size: 13px;
             display: none;
+            flex-wrap: wrap;
             &_active {
                 display: flex;
             }
             input {
                 margin-right: 5px;
             }
+            .window-manager__window__validation-error {
+                margin-top: 9px;
+            }
         }
+
+
         
         &__descr {
             text-align: center;

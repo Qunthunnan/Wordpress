@@ -1,22 +1,5 @@
 window.addEventListener('DOMContentLoaded', () => {
 
-    // Відкривається віндов (дропдаун - оберіть тип курсу; день, коли зручно(календарик, де можна обрати дні, починаючи з сьогодні, бажано - з маркуванням днів, де є вільні слоти); в залежності від обраного дня, виводить вільні слоти у форматі '11:00', '12:00' (час за києвом), можна обрати тільки один; ім'я, електрона пошта, (поля можна спробувати виводити чергово, один за одним) - записатись
-    //      чи усі поля пройшли валідацію(треба також перевіряти, чи записаний користувач вже по пошті)
-    //              Закриваємо вікно з букінгом, відкриваємо вікно-записали, але залишаємо кнопку, записати ще одного користувача. Закриваємо, відкриваємо знову вікно? (перевірка, чи записаний користувач?)
-    //              Виводимо те саме, вікно, тільки трішки коригуємо текст що користучач вже записаний, посилання на урок він може подивитись у листі. Користувач натискає записати ще користувача
-    //                      Робимо свіч вікна на запис на курс, щоби дати записати нового користувача
-    //
-    //      на полях, що не пройшли валідацію виводити помилки(не обран тип курсу, не обран зручний день, не обран часовий слот, не правильно ввели пошту, користувач вже записаний, хай перевірить пошту)
-    //
-    //
-    //Структура даних
-    //      Розклад уроків - це об'єкт, де лежить масив уроків(конкретна реалізація ще продумується), список усіх записаних користувачів, кожен урок це об'єкт з часовою id, типом уроку, масивом користувачів, записаних на вебінар, максимальна кількість користувачів, кількість користувачів - це length масиву користувачів; Методи уроку: чи є вільні місця, записати користувача, видалити запис користувача; Методи розкладу: повернути уроки з вільними місцями для запису, записати користувача на конкретний урок, чи зареєстрований вже десь користувач;
-    //Кожен користувач - це об'єкт з ім'ям, поштою, за часовим id запису на заняття
-    //
-    //що зберігається на фронті - чи записався вже користувач
-    //  
-
-
     //backend simulation
 
     function generateRandomString(minLength, maxLength) {
@@ -172,17 +155,17 @@ window.addEventListener('DOMContentLoaded', () => {
             return undefined;
         }
 
-        if(userName) {
+        if(userName && typeof(userName) === 'string') {
             this.userName = userName;
         } else {
-            console.log('Name is not defined');
+            console.log('Name formate is wrong, or not defined');
             return undefined;
         }
 
-        if(userEmail) {
+        if(userEmail && typeof(userEmail) === 'string') {
             this.userEmail = userEmail;
         } else {
-            console.log('Email is not defined');
+            console.log('Email formate is wrong , or not defined');
             return undefined;
         }
 
@@ -419,6 +402,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 
             } else {
                 console.log(`lessonType is not recognized, try first .addNewLessonType(\'${lessonType}\');`);
+                return undefined;
             }
         }
 
@@ -442,7 +426,7 @@ window.addEventListener('DOMContentLoaded', () => {
             try {
                 if(user.userName) {
                     for(let i in this.allUsers) {
-                        if(user.email == this.allUsers[i].email) {
+                        if(user.userEmail === this.allUsers[i].userEmail) {
                             return this.allUsers[i].id;
                         }
                     }
@@ -450,6 +434,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 }
             } catch (error) {
                 console.log('User Data is corrupted');
+                return undefined;
             }
         }
 
@@ -463,7 +448,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     }
                 }
                 console.log('Lesson Id is icorrect');
-                return false;
+                return undefined;
         }
 
         this.bookUser = function (userName, userEmail, lessonId) {
@@ -476,17 +461,21 @@ window.addEventListener('DOMContentLoaded', () => {
                             if(!checkUserReg) {
                                 this.allUsers.push(userAnswer);
                                 this.lessons[lessonId].addUser(userAnswer);
+                                return true;
                             } else {
-                                console.log(`This user${this.allUsers[checkUserReg]} is already registered on the lesson ${this.lessons[lessonId]}`);
+                                console.log(`This user${this.allUsers[checkUserReg].userEmail} is already registered on the lesson ${this.lessons[lessonId].lessonTime}`);
+                                return 'registered';
                             }
     
                         } else {
                             console.log(`Lesson ${this.lessons[lessonId]} is full`);
+                            return false;
                         }
-                    }
+                    } return false;
                 }
+                return false;
             } catch (error) {
-                
+                return false;
             }
         }
 
@@ -524,17 +513,13 @@ window.addEventListener('DOMContentLoaded', () => {
     scheduleGeneration(99, minDate, weekDate);
     scheduleGeneration(80, weekDate2, monthDate);
 
-    for (let i in timetable.lessons) {
-        console.log(`${timetable.lessons[i].lessonTime} ${timetable.lessons[i].lessonType}: ${timetable.lessons[i].lessonUsers.length} / ${timetable.lessons[i].maxUsers}`);
-    }
-
     console.dir(timetable);
 
     //frontend
 
     function findTrueParentElemByClass(eventElement, parentClass) {
         try {
-            if(eventElement.parentNode.className == parentClass) {
+            if(eventElement.parentNode.classList[0] === parentClass) {
                 return eventElement.parentNode;
             } else {
                 findTrueParentElemByClass(eventElement.parentNode, parentClass);
@@ -544,8 +529,74 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function modalOpen(element, action) {
+        let opacity = +window.getComputedStyle(element).opacity;
+        if(opacity >= 1) {
+            element.style.opacity = 1;
+            clearInterval(openInId);
+            openInId = null;
+            if(action != undefined) {
+                action();
+            }
+            return undefined;
+        }
+        opacity += 0.03;
+        element.style.opacity = opacity;
+    }
+    
+    function modalClose(element, action) {
+        let opacity = +window.getComputedStyle(element).opacity;
+        if(opacity <= 0 ) {	
+            element.style.display = 'none';
+            element.style.opacity = 0;
+            clearInterval(closeInId);
+            closeInId = null;
+            if(action != undefined) {
+                action();
+            }
+            return undefined;
+        }
+        opacity -= 0.03;
+        element.style.opacity = opacity;
+    }
+    
+    function modalOpenClose(element, action) {
+        let display = window.getComputedStyle(element).display;
+        if(display == 'none') {
+            element.style.display = 'block';
+            if(!openInId) {
+                if(action != undefined) {
+                    openInId = setInterval(modalOpen, 10, element, action);
+                } else {
+                    openInId = setInterval(modalOpen, 10, element);
+                }
+            }
+            
+        } else {
+            if(!closeInId) {
+                if(action != undefined) {
+                    closeInId = setInterval(modalClose, 10, element, action);
+                } else {
+                    closeInId = setInterval(modalClose, 10, element);
+                }
+            }
+        }
+    }
+
+    function modalSwitchWindows(activeWindow, targetWindow) {
+        modalOpenClose(activeWindow);
+        modalOpenClose(targetWindow);
+    }
+    
+    function modalHideSwitchTo(modalWindow, targetWindow) {
+        modalWindow.style.display = 'none';
+        modalWindow.style.opacity = 0;
+        targetWindow.style.display = 'block';
+        targetWindow.style.opacity = 1;
+    }
+
     function lessonTypeListFiller () {
-        let lessonTypes = [];
+        let lessonTypes = [];        
         for(let i in timetable.getAvailableLessonTypes()) {
             lessonTypes.push(timetable.getAvailableLessonTypes()[i]);
         } 
@@ -579,7 +630,6 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateCalendar (selectedLessonType) {
-        debugger;
         let freeDays = []; 
         for(let i in timetable.getFilteredFreeLessons(selectedLessonType)) {
             freeDays.push(timetable.getFilteredFreeLessons(selectedLessonType)[i].lessonTime);
@@ -610,14 +660,12 @@ window.addEventListener('DOMContentLoaded', () => {
     }
  
     function showCaledar (selectedLessonType) {
-        debugger;
         isShowedCalendar = true;
         calendarBlock.classList.add('window-manager__window__choose-day_active');
         updateCalendar(selectedLessonType);
     }
 
     function hideFreeHours () {
-        debugger;
         freeHoursBlock.classList.remove('window-manager__window__choose-time_active');
         selectedDate = undefined;
         isSelectedDate = false;
@@ -625,7 +673,6 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateFreeHours (selectedLessonType, selectedDate) {
-        debugger;
         if(isSelectedLessonId) {
             isSelectedLessonId = false;
             selectedLessonId = undefined;
@@ -662,13 +709,11 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     function showFreeHours (selectedLessonType, selectedDate) {
-        debugger;
         freeHoursBlock.classList.add('window-manager__window__choose-time_active');
         updateFreeHours(selectedLessonType, selectedDate);
     }
 
     function timeChoose (e) {
-        debugger;
         if(!isSelectedLessonId) {
             isSelectedLessonId = true;
             showUserForm();
@@ -681,33 +726,127 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     function showUserForm () {
-        debugger;
         userFormBlocksList.forEach((element)=>{
             element.classList.add(`${element.className}_active`);
         });
     }
 
     function hideUserForm () {
-        debugger;
         for (let i = userFormBlocksList.length-1; i >= 0; i--) {
             userFormBlocksList[i].classList.remove(`${userFormBlocksList[i].classList[0]}_active`);
         }
     }
 
+    function inputValidation(input) {
+        if(input.name === 'name') {
+            const formatName = /^[\s]*[^\!\@\#\$\%\^\&\*\=\+\~\`\{\}\[\]\\\|\'\"\;\:\/\?\.\>\,\<]*$/;
+            const minNameLength = 2;
+            const maxNameLength = 256;
+            if(input.value.length >= minNameLength) {
+                if(input.value.length <= maxNameLength) {
+                    if(formatName.test(input.value)) {
+                        deleteError(input);
+                        return true;
+                    } else {
+                        showErrors(input, 'Спеціальні символи, які можна використати:\n ( ) - _');
+                        return false;
+                    }
+                } else {
+                    showErrors(input, 'Максимальна довжина імені: 255');
+                    return false;
+                }
+            } else {
+                showErrors(input, 'Мінімальна довжина імені: 2');
+                return false;
+            }
+        }
 
-    const windowManager = document.querySelector('.window-manager');
-    let lessonTypeSelectList = windowManager.querySelector('.window-manager__window__lesson-type__list'),
-        lessonTypeSelected = windowManager.querySelector('.window-manager__window__lesson-type-selected'),
-        calendarBlock = windowManager.querySelector('.window-manager__window__choose-day'),
-        calendarElem = windowManager.querySelector('#calendar'),
-        freeHoursBlock = windowManager.querySelector('.window-manager__window__choose-time'),
-        freeHoursList = windowManager.querySelector('.window-manager__window__choose-time__list'),
-        userNameBlock = windowManager.querySelector('.window-manager__window__name'),
-        userEmailBlock = windowManager.querySelector('.window-manager__window__email'),
-        userSubmitBlock = windowManager.querySelector('.window-manager__window__submit'),
-        userPolicyBlock = windowManager.querySelector('.window-manager__window__policy'),
-        userFormBlocksList = [userNameBlock, userEmailBlock, userSubmitBlock, userPolicyBlock],
-        calendar = flatpickr(calendarElem, {
+        if(input.name === 'email') {
+            const formatEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if(formatEmail.test(input.value)) {
+                deleteError(input);
+                return true;
+            } else {
+                showErrors(input, 'Перевірте, чи правильно написана електронна адреса');
+            }
+        }
+    
+        if(input.name === 'policy') {
+            if(input.checked) {
+                deleteError(input);
+                return true
+            } else {
+                showErrors(input, 'Потрібна ваша згода');
+            }
+        }
+        return false;
+    }
+    
+    function showErrors(input, error) {
+        if(!!input.parentNode.querySelector('.window-manager__window__validation-error') === false) {
+            const errorElement = document.createElement('label');
+            errorElement.htmlFor = input.id;
+            errorElement.className = 'window-manager__window__validation-error';
+            errorElement.innerText = error;
+            input.parentNode.append(errorElement);
+        } else {
+            if(input.parentNode.querySelector('.window-manager__window__validation-error').innerText !== error) {
+                deleteError(input);
+                const errorElement = document.createElement('label');
+                errorElement.htmlFor = input.id;
+                errorElement.className = 'window-manager__window__validation-error';
+                errorElement.innerText = error;
+                input.parentNode.append(errorElement);
+            }
+        }
+    }
+
+    function deleteError(input) {
+        if(!!input.parentNode.querySelector('.window-manager__window__validation-error')) {
+            input.parentNode.querySelector('.window-manager__window__validation-error').remove();
+        }
+    }
+
+    function resetBookWindow() {
+        debugger;
+        hideUserForm();
+        hideFreeHours();
+        isSelectedLessonId = false;
+        selectedLessonId = undefined;
+        calendarBlock.classList.remove('window-manager__window__choose-day_active');
+        isShowedCalendar = false;
+        isSelectedDate = false;
+        selectedDate = undefined;
+        isOpenedList = false;
+        selectedLessonType = '';
+        lessonTypeSelected.innerText = '';
+        calendar.clear();
+    }
+
+    const windowManager = document.querySelector('.window-manager'),
+          windowBook = windowManager.querySelector('.window-manager__window_book'),
+          windowBooked = windowManager.querySelector('.window-manager__window_booked'),
+          windowRegistered = windowManager.querySelector('.window-manager__window_registered'),
+          windowError = windowManager.querySelector('.window-manager__window_error'),
+          calendarBlock = windowBook.querySelector('.window-manager__window__choose-day'),
+          freeHoursBlock = windowBook.querySelector('.window-manager__window__choose-time'),
+          userNameBlock = windowBook.querySelector('.window-manager__window__name'),
+          userEmailBlock = windowBook.querySelector('.window-manager__window__email'),
+          userSubmitBlock = windowBook.querySelector('.window-manager__window__submit'),
+          userPolicyBlock = windowBook.querySelector('.window-manager__window__policy'),
+          userFormBlocksList = [userNameBlock, userEmailBlock, userSubmitBlock, userPolicyBlock],
+          lessonTypeSelectList = windowBook.querySelector('.window-manager__window__lesson-type__list'),
+          lessonTypeSelected = windowBook.querySelector('.window-manager__window__lesson-type-selected'),
+          calendarElem = calendarBlock.querySelector('#calendar'),
+          freeHoursList = freeHoursBlock.querySelector('.window-manager__window__choose-time__list'),
+          userNameInput = userNameBlock.querySelector('#name'),
+          userEmailInput = userEmailBlock.querySelector('#email'),
+          policyCheckBox = userPolicyBlock.querySelector('#policy'),
+          submitBtns = windowManager.querySelectorAll('.book-btn_submit'),
+          windowCloseBtns = windowManager.querySelectorAll('.window-manager__window__close'),
+          openWindowBtns = document.querySelectorAll('.book-btn');
+
+    let calendar = flatpickr(calendarElem, {
             "locale": "uk",
             altInput: true,
             altFormat: "j F, Y",
@@ -722,7 +861,21 @@ window.addEventListener('DOMContentLoaded', () => {
         selectedDate,
         selectedLessonId,
         lessonTypeListItems,
+        openInId,
+        closeInId,
         selectedLessonType = '';
+
+
+//lesson type drop down
+
+    openWindowBtns.forEach((element)=>{
+        if(element.classList[1] !== 'book-btn_submit') {
+            element.addEventListener('click', (e)=>{
+                debugger;
+                modalOpenClose(windowManager);
+            });
+        }
+    });
 
     lessonTypeListFiller();
 
@@ -741,7 +894,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    //lesson type drop down
+    
     lessonTypeListItems.forEach((element) => {
         element.addEventListener('mouseenter', (e) => {
             if(e.target.parentNode.className != 'window-manager__window__lesson-type__item') {
@@ -766,7 +919,7 @@ window.addEventListener('DOMContentLoaded', () => {
             targetElement.parentNode.parentNode.querySelector('.window-manager__window__lesson-type-selected').innerText = targetElement.querySelector('.window-manager__window__lesson-type__title').innerText;
             selectedLessonType = targetElement.getAttribute('data-course-type');
             //calendar
-            debugger;
+
             if(isShowedCalendar) {
                 updateCalendar(selectedLessonType);
             } else {
@@ -775,56 +928,81 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    //calendar
+    //userFormListeners
 
-// Ініціалізація Vue 3.x та VeeValidate 4.x
-    const app = Vue.createApp({
-        data() {
-        return {
-            name: '',
-            email: ''
-        };
-        },
-        setup() {
-        // Використання VeeValidate у Vue 3.x
-        const { validate, errors } = VeeValidate();
-    
-        // Реєстрація правил валідації
-        validate('required', (value) => {
-            return {
-            valid: value && value.trim() !== '',
-            message: 'Це поле обов\'язкове'
-            };
-        });
-    
-        validate('email', (value) => {
-            const emailRegex = /\S+@\S+\.\S+/;
-            return {
-            valid: emailRegex.test(value),
-            message: 'Введіть коректну адресу електронної пошти'
-            };
-        });
-    
-        return { validate, errors };
-        },
-        methods: {
-        submitForm() {
-            // Перевірка наявності помилок перед відправленням форми
-            this.validate().then((result) => {
-            if (result) {
-                // Якщо форма валідна, виконайте відповідні дії (наприклад, відправлення на сервер)
-                console.log('Форма валідна. Відправлення на сервер:', this.name, this.email);
-            } else {
-                // Якщо форма не валідна, обробте помилки
-                console.log('Форма не валідна. Виправте помилки.');
-            }
-            });
-        }
-        }
+    userNameInput.addEventListener('input', (e)=> {
+        inputValidation(e.target);
     });
     
-    app.use(VeeValidate);
-    app.mount('#app');
+    policyCheckBox.addEventListener('input', (e)=> {
+        inputValidation(e.target);
+    });
+
+    userEmailInput.addEventListener('input', (e) => {
+        inputValidation(e.target);
+    })
+    submitBtns.forEach((element) => {
+        if (element.parentNode.parentNode.classList[0] === 'window-manager__window__form') {
+            element.addEventListener('click', (e)=> {
+                debugger;
+                e.preventDefault();
+                const nameValidationResult = inputValidation(userNameInput),
+                      emailValidationResult = inputValidation(userEmailInput),
+                      policyValidationResult = inputValidation(policyCheckBox);
+        
+                if(nameValidationResult && emailValidationResult && policyValidationResult) {
+                    let answer = timetable.bookUser(userNameInput.value, userEmailInput.value, selectedLessonId)
+                    console.log(timetable);
+                    document.querySelector('.window-manager__window__form').reset();
+                    if(answer === true) {
+                        windowBooked.querySelector('.window-manager__window__descr').innerText = `Дякую, що записались, ваш вебінар відбудеться: ${timetable.lessons[selectedLessonId].lessonTime.toLocaleDateString('uk-UA', {
+                            month: 'long',
+                            day: 'numeric', 
+                            hour: "numeric", 
+                            minute: "numeric"
+                        })}. Посилання на вебінар прийде на електронну пошту.😊`;
+                        modalOpenClose(windowBook);
+                        modalOpenClose(windowBooked, resetBookWindow);
+                    } else {
+                        if(answer === 'registered') {
+                            modalSwitchWindows(windowBook, windowRegistered);
+                        }
+
+                        if(answer === false) {
+                            modalSwitchWindows(windowBook, windowError);
+                        }
+                    }
+                    
+                }
+            });
+        }
+
+        if(element.parentNode.parentNode.classList[1] === windowBooked.classList[1] || element.parentNode.parentNode.classList[1] === windowRegistered.classList[1]) {
+            element.addEventListener('click', (e)=>{
+                debugger;
+                modalSwitchWindows(e.target.parentNode.parentNode, windowBook);
+            });
+        }
+    });
+
+    windowCloseBtns.forEach((element)=>{
+        let trueParentElement = findTrueParentElemByClass(element, 'window-manager__window');
+        if(trueParentElement.classList[1] === windowBook.classList[1]) {
+            element.addEventListener('click', e =>{
+                debugger;
+                modalOpenClose(windowManager);
+            });
+        }
+
+        if(trueParentElement.classList[1] === windowBooked.classList[1] || trueParentElement.classList[1] === windowRegistered.classList[1] || trueParentElement.classList[1] === windowError.classList[1]) {
+            element.addEventListener('click', e => {
+                debugger;
+                modalOpenClose(trueParentElement, ()=> {
+                    modalHideSwitchTo(windowManager, windowBook);
+                })
+            })
+        }
+    });
 
 
     // scroll
@@ -837,4 +1015,4 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     scroll($("a[href=#waiting]"));
-})
+});
