@@ -510,7 +510,7 @@ window.addEventListener('DOMContentLoaded', () => {
         monthDate = new Date(new Date().fp_incr(30).setHours(23,59,59,999));
 
     generateLessonsByDate(minDate, monthDate);
-    scheduleGeneration(100, minDate, weekDate);
+    scheduleGeneration(98, minDate, weekDate);
     scheduleGeneration(80, weekDate2, monthDate);
 
     console.dir(timetable);
@@ -671,7 +671,6 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     function hideFreeHours () {
-        debugger;
         freeHoursBlock.classList.remove('window-manager__window__choose-time_active');
         selectedDate = undefined;
         isSelectedDate = false;
@@ -814,7 +813,6 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     function resetBookWindow() {
-        debugger;
         hideUserForm();
         hideFreeHours();
         isSelectedLessonId = false;
@@ -886,7 +884,6 @@ window.addEventListener('DOMContentLoaded', () => {
     openWindowBtns.forEach((element)=>{
         if(element.classList[1] !== 'book-btn_submit') {
             element.addEventListener('click', (e)=>{
-                debugger;
                 modalOpenClose(windowManager);
             });
         }
@@ -959,7 +956,6 @@ window.addEventListener('DOMContentLoaded', () => {
     submitBtns.forEach((element) => {
         if (element.parentNode.parentNode.classList[0] === 'window-manager__window__form') {
             element.addEventListener('click', (e)=> {
-                debugger;
                 e.preventDefault();
                 const nameValidationResult = inputValidation(userNameInput),
                       emailValidationResult = inputValidation(userEmailInput),
@@ -968,8 +964,9 @@ window.addEventListener('DOMContentLoaded', () => {
                 if(nameValidationResult && emailValidationResult && policyValidationResult) {
                     let answer = timetable.bookUser(userNameInput.value, userEmailInput.value, selectedLessonId);
                     console.log(timetable);
-                    document.querySelector('.window-manager__window__form').reset();
+                    
                     isReseted = true;
+                    debugger;
                     if(answer === true) {
                         windowBooked.querySelector('.window-manager__window__descr').innerText = `Дякую, що записались, ваш вебінар відбудеться:\n ${timetable.lessons[selectedLessonId].lessonTime.toLocaleDateString('uk-UA', {
                             month: 'long',
@@ -977,6 +974,25 @@ window.addEventListener('DOMContentLoaded', () => {
                             hour: "numeric", 
                             minute: "numeric"
                         })}. Посилання на вебінар прийде на електронну пошту.😊`;
+
+                        const sendUserData = {
+                            name: userNameInput.value,
+                            email: userEmailInput.value,
+                            lessonDate: timetable.lessons[selectedLessonId].lessonTime.toLocaleDateString('uk-UA', {
+                                month: 'long',
+                                day: 'numeric', 
+                                hour: "numeric", 
+                                minute: "numeric"
+                            })
+                        }
+
+
+                        fetch('../mailer/smart.php', {
+                            method: 'POST',
+                            body: JSON.stringify(sendUserData)
+                        });
+
+                        document.querySelector('.window-manager__window__form').reset();
                         modalOpenClose(windowBook, ()=>{
                             modalOpenClose(windowBooked, resetBookWindow);
                         });
@@ -1000,7 +1016,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
         if(element.parentNode.parentNode.classList[1] === windowBooked.classList[1] || element.parentNode.parentNode.classList[1] === windowRegistered.classList[1]) {
             element.addEventListener('click', (e)=>{
-                debugger;
                 modalSwitchWindows(e.target.parentNode.parentNode, windowBook);
             });
         }
@@ -1010,14 +1025,12 @@ window.addEventListener('DOMContentLoaded', () => {
         let trueParentElement = findTrueParentElemByClass(element, 'window-manager__window');
         if(trueParentElement.classList[1] === windowBook.classList[1]) {
             element.addEventListener('click', e =>{
-                debugger;
                 modalOpenClose(windowManager);
             });
         }
 
         if(trueParentElement.classList[1] === windowBooked.classList[1] || trueParentElement.classList[1] === windowRegistered.classList[1] || trueParentElement.classList[1] === windowError.classList[1]) {
             element.addEventListener('click', e => {
-                debugger;
                 modalOpenClose(trueParentElement, ()=> {
                     modalHideSwitchTo(windowManager, windowBook);
                 })
