@@ -265,7 +265,7 @@
 
 @media(max-width: 400px) {
     .window-manager {
-        --default-input-width: 81vw;
+        --default-input-width: 87vw;
         &__window {
             width: 100vw;
             &__descr {
@@ -313,7 +313,6 @@
 @media (max-height: 550px) {
     .window-manager {
         --select-height: 34px;
-        --default-input-width: 87vw;
         &__window {
             padding: 20px;
             &__lesson-type label, &__choose-day label, &__name label, &__email label{
