@@ -859,6 +859,7 @@ window.addEventListener('DOMContentLoaded', () => {
             maxDate: new Date().fp_incr(30),
             appendTo: calendarBlock,
         }),
+        isOpenedWindow = false,
         isOpenedList = false,
         isShowedCalendar = false,
         isSelectedDate = false,
@@ -884,7 +885,11 @@ window.addEventListener('DOMContentLoaded', () => {
     openWindowBtns.forEach((element)=>{
         if(element.classList[1] !== 'book-btn_submit') {
             element.addEventListener('click', (e)=>{
-                modalOpenClose(windowManager);
+                debugger;
+                if(!isOpenedWindow) {
+                    isOpenedWindow = true;
+                    modalOpenClose(windowManager);
+                }
             });
         }
     });
@@ -986,11 +991,15 @@ window.addEventListener('DOMContentLoaded', () => {
                             })
                         }
 
+                        try{
+                            fetch('../mailer/smart.php', {
+                                method: 'POST',
+                                body: JSON.stringify(sendUserData)
+                            });
+                        } catch {
+                            
+                        }
 
-                        fetch('../mailer/smart.php', {
-                            method: 'POST',
-                            body: JSON.stringify(sendUserData)
-                        });
 
                         document.querySelector('.window-manager__window__form').reset();
                         modalOpenClose(windowBook, ()=>{
@@ -1023,14 +1032,18 @@ window.addEventListener('DOMContentLoaded', () => {
 
     windowCloseBtns.forEach((element)=>{
         let trueParentElement = findTrueParentElemByClass(element, 'window-manager__window');
+        
         if(trueParentElement.classList[1] === windowBook.classList[1]) {
             element.addEventListener('click', e =>{
+                debugger;
+                isOpenedWindow = false;
                 modalOpenClose(windowManager);
             });
         }
 
         if(trueParentElement.classList[1] === windowBooked.classList[1] || trueParentElement.classList[1] === windowRegistered.classList[1] || trueParentElement.classList[1] === windowError.classList[1]) {
             element.addEventListener('click', e => {
+                isOpenedWindow = false;
                 modalOpenClose(trueParentElement, ()=> {
                     modalHideSwitchTo(windowManager, windowBook);
                 })
