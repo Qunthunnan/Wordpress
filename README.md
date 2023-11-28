@@ -6,39 +6,39 @@ ____
 
 - Українська версія
     - <a href = "#contentsUa">Зміст</a>
-    - Backend
-        - User
-        - Lesson
-        - LessonType
-        - Timetable
-        - Функції генерації розкладу
-    - Frontend
-        - Основні функції
-        -  Основні прослуховувачі подій
+    - <a href = "#backendUa">Backend</a>
+        - <a href = "#userUa">User</a>
+        - <a href = "#lessonUa">Lesson</a>
+        - <a href = "#lessonTypeUa">LessonType</a>
+        - <a href = "#timetableUa">Timetable</a>
+        - <a href = "#additionalFooUa">Функції генерації розкладу</a>
+    - <a href = "#frontendUa">Frontend</a>
+        - <a href = "#mainUiFooUa">Основні функції</a>
+        - <a href = "#mainEventListenersUa">Основні прослуховувачі подій</a>
 - English version
-    - Сontents
-    - Backend
-        - User
-        - Lesson
-        - LessonType
-        - Timetable
-        - Schedule generation functions
-    - Frontend
-        - Main functions
-        -  Main event listeners
+    - <a href = "#contentsEn">Сontents</a>
+    - <a href = "#backendEn">Backend</a>
+        - <a href = "#userEn">User</a>
+        - <a href = "#lessonEn">Lesson</a>
+        - <a href = "#lessonTypeEn">LessonType</a>
+        - <a href = "#timetableEn">Timetable</a>
+        - <a href = "#additionalFooEn">Schedule generation functions</a>
+    - <a href = "#frontendEn">Frontend</a>
+        - <a href = "#mainUiFooEn">Main functions</a>
+        - <a href = "#mainEventListenersEn">Main event listeners</a>
 
-## Backend
+## <a id = "backendUa">Backend</a>
 ____
 Backend складається з кількох чітких структур: Користувачі User, Уроки Lesson, типи уроків LessonType, Розклад уроків Timetable, та додаткові функції, які забезпечують "генерацію" уроків та користувачів. Кожен об'єкт User, Lesson, LessonType та Timetable створюються завдяки функціям конструкотам, які мають внутрішні перевірки на корректність данних, яких в них передали.
 Давайте розглянемо основні компоненти, які приводять у життя цей проєкт:
 
 
-### User
+### <a id = "userUa">User</a>
 `User(id, userName, userEmail, userBookId)`
 
 Створює об'єкт користувача із зазначеним ID, ім'ям користувача, електронною адресою та ID заброньованого уроку.
 
-### Lesson
+### <a id = "lessonUa">Lesson</a>
 `Lesson(lessonId, lessonType, lessonTime, maxUsers)`
 
 Створює об'єкт уроку із зазначеним ID, типом, часом та максимальною кількістю користувачів.
@@ -58,12 +58,12 @@ Backend складається з кількох чітких структур: 
 
 `addUser(user): void` - Додає користувача на урок, якщо є вільні місця.
 
-### LessonType
+### <a id = "lessonTypeUa">LessonType</a>
 `LessonType(lessonType, title, message)`
 
 Створює об'єкт типу уроку із зазначеним типом, назвою та повідомленням.
 
-### Timetable
+### <a id = "timetableUa">Timetable</a>
 
 `Timetable(availableLessonTypes, allUsers, lessons)`
 
@@ -88,7 +88,7 @@ Backend складається з кількох чітких структур: 
 `addLesson(lesson): void` - Додає новий урок до розкладу.
 
 
-### Додаткові функції, які генерують та заповнюють розклад уроків випадковими користувачами:
+### <a id = "additionalFooUa">Додаткові функції, які генерують та заповнюють розклад уроків випадковими користувачами:</a>
 
 `generateRandomString(minLength, maxLength)`: Генерує випадковий рядок довжиною від minLength до maxLength. Символи у рядку є буквено-цифровими.
 
@@ -104,11 +104,11 @@ Backend складається з кількох чітких структур: 
 
 `scheduleGeneration(density, minDate, maxDate)`: Генерує бронювання на основі відсоткової щільності в заданому діапазоні дат.
 
-## Frontend
+## <a id = "frontendUa">Frontend</a>
 ____
 Фронтендова частина була написана на чистому JS з використанням HTML та CSS (SCSS). Для відображення, та взаємодією з календарем використовувалась бібліотека flatpickr, увесь інший функціонал був написаний мною особисто.
 
-### Основні функції для взаємодії користувача з UI запису на урок:
+### <a id = "mainUiFoo">Основні функції для взаємодії користувача з UI запису на урок:</a>
 
 `modalOpen(element, action)`: Відкриває модальне вікно з плавною зміною прозорості.
 
@@ -149,7 +149,7 @@ ____
 `resetBookWindow()`: Скидає стан вікна бронювання.
 
 
-### Основні прослуховувачі подій:
+### <a id = "mainEventListenersUa">Основні прослуховувачі подій:</a>
 
 Відкриття вікна:
 `openWindowBtns`: Використовується для прослуховування кліку на кнопки відкриття вікон. При кліку відбувається виклик modalOpenClose(windowManager).
