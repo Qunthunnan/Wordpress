@@ -181,22 +181,22 @@ ____
 `freeHoursList`: Прослуховується клік на годинах уроку. Коли користувач обирає конкретну годину, показується форма для введення даних користувача.
 
 
-# Wordpress
+# <span id="contentsEn">Wordpress</span>
 ____
 My first learning project with HTML CSS, which I later modified and developed additional functionality in JS. Here, a "simulation" of the lesson schedule server behavior and a registration form are used, which interacts with this simulation to create an experience close to the reality of lesson registration. Later, I will separate the description of the "backend" and "frontend" parts of the code, but it should be noted immediately that all actions in the backend part are not actually backend, but rather a simulation because it is performed on the client side, and all data is generated and stored only in a specific session of the open browser tab. After reloading the page, all data about lessons and users is generated again because it is not stored on the server in the database or even in the local storage of the page.
 
 
-## Backend
+## <span id="backendEn">Backend</span>
 ____
 The backend consists of several clear structures: Users, Lessons, Lesson types, Lesson Schedule, and additional functions that provide the "generation" of lessons and users. Each User, Lesson, Lesson Type, and Timetable object is created thanks to constructor functions that have internal checks for the correctness of the data passed to them.
 Let's consider the main components that bring this project to life:
 
-### User
+### <span id="userEn">User</span>
 `User(id, userName, userEmail, userBookId)`
 
 Creates a user object with a specified ID, username, email, and the ID of the booked lesson.
 
-### Lesson
+### <span id="lessonEn">">Lesson</span>
 `Lesson(lessonId, lessonType, lessonTime, maxUsers)`
 
 Creates a lesson object with a specified ID, type, time, and maximum number of users.
@@ -215,7 +215,7 @@ Methods:
 
 `addUser(user): void` - Adds a user to the lesson if there are available slots.
 
-### LessonType
+### <span id="lessonTypeEn">LessonType</span>
 
 `LessonType(lessonType, title, message)`
 
