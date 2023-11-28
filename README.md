@@ -33,12 +33,12 @@ Backend складається з кількох чітких структур: 
 Давайте розглянемо основні компоненти, які приводять у життя цей проєкт:
 
 
-### <a id = "userUa">User</a>
+### <span id = "userUa">User</span>
 `User(id, userName, userEmail, userBookId)`
 
 Створює об'єкт користувача із зазначеним ID, ім'ям користувача, електронною адресою та ID заброньованого уроку.
 
-### <a id = "lessonUa">Lesson</a>
+### <span id = "lessonUa">Lesson</span>
 `Lesson(lessonId, lessonType, lessonTime, maxUsers)`
 
 Створює об'єкт уроку із зазначеним ID, типом, часом та максимальною кількістю користувачів.
@@ -58,12 +58,12 @@ Backend складається з кількох чітких структур: 
 
 `addUser(user): void` - Додає користувача на урок, якщо є вільні місця.
 
-### <a id = "lessonTypeUa">LessonType</a>
+### <span id = "lessonTypeUa">LessonType</span>
 `LessonType(lessonType, title, message)`
 
 Створює об'єкт типу уроку із зазначеним типом, назвою та повідомленням.
 
-### <a id = "timetableUa">Timetable</a>
+### <span id = "timetableUa">Timetable</span>
 
 `Timetable(availableLessonTypes, allUsers, lessons)`
 
@@ -88,7 +88,7 @@ Backend складається з кількох чітких структур: 
 `addLesson(lesson): void` - Додає новий урок до розкладу.
 
 
-### <a id = "additionalFooUa">Додаткові функції, які генерують та заповнюють розклад уроків випадковими користувачами:</a>
+### <span id = "additionalFooUa">Додаткові функції, які генерують та заповнюють розклад уроків випадковими користувачами</span>
 
 `generateRandomString(minLength, maxLength)`: Генерує випадковий рядок довжиною від minLength до maxLength. Символи у рядку є буквено-цифровими.
 
@@ -104,11 +104,11 @@ Backend складається з кількох чітких структур: 
 
 `scheduleGeneration(density, minDate, maxDate)`: Генерує бронювання на основі відсоткової щільності в заданому діапазоні дат.
 
-## <a id = "frontendUa">Frontend</a>
+## <span id = "frontendUa">Frontend</span>
 ____
 Фронтендова частина була написана на чистому JS з використанням HTML та CSS (SCSS). Для відображення, та взаємодією з календарем використовувалась бібліотека flatpickr, увесь інший функціонал був написаний мною особисто.
 
-### <a id = "mainUiFoo">Основні функції для взаємодії користувача з UI запису на урок:</a>
+### <span id = "mainUiFoo">Основні функції для взаємодії користувача з UI запису на урок</span>
 
 `modalOpen(element, action)`: Відкриває модальне вікно з плавною зміною прозорості.
 
@@ -149,7 +149,7 @@ ____
 `resetBookWindow()`: Скидає стан вікна бронювання.
 
 
-### <a id = "mainEventListenersUa">Основні прослуховувачі подій:</a>
+### <span id = "mainEventListenersUa">Основні прослуховувачі подій</span>
 
 Відкриття вікна:
 `openWindowBtns`: Використовується для прослуховування кліку на кнопки відкриття вікон. При кліку відбувається виклик modalOpenClose(windowManager).
@@ -196,7 +196,7 @@ Let's consider the main components that bring this project to life:
 
 Creates a user object with a specified ID, username, email, and the ID of the booked lesson.
 
-### <span id="lessonEn">">Lesson</span>
+### <span id="lessonEn">Lesson</span>
 `Lesson(lessonId, lessonType, lessonTime, maxUsers)`
 
 Creates a lesson object with a specified ID, type, time, and maximum number of users.
@@ -221,7 +221,7 @@ Methods:
 
 Creates a lesson type object with a specified type, title, and message.
 
-### Timetable
+### <span id="timetableEn">Timetable</span>
 
 `Timetable(availableLessonTypes, allUsers, lessons)`
 
@@ -246,7 +246,7 @@ Methods:
 `addLesson(lesson): void` - Adds a new lesson to the schedule.
 
 
-### Additional functions that generate and fill lesson schedule with random users:
+### <span id="additionalFooEn">Additional functions that generate and fill lesson schedule with random users</span>
 
 `generateRandomString(minLength, maxLength)`: Generates a random string with a length between minLength and maxLength. The characters in the string are alphanumeric.
 
@@ -262,11 +262,11 @@ Methods:
 
 `scheduleGeneration(density, minDate, maxDate)`: Generates bookings based on the percentage density within the specified date range.
 
-## Frontend
+## <span id="frontendEn">Frontend</span>
 ____
 The frontend part was written in pure JS using HTML and CSS (SCSS). The library flatpickr was employed for displaying and interacting with the calendar, while all other functionality was personally implemented.
 
-### Key functions for user interaction with the lesson booking UI:
+### <span id="mainUiFooEn">Key functions for user interaction with the lesson booking UI</span>
 
 `modalOpen(element, action)`: Opens a modal window with a smooth opacity transition.
 
@@ -307,7 +307,7 @@ The frontend part was written in pure JS using HTML and CSS (SCSS). The library 
 `resetBookWindow()`: Resets the state of the booking window.
 
 
-### Main event listeners:
+### <span id="mainEventListenersEn">Main event listeners</span>
 
 Opening Windows:
 
