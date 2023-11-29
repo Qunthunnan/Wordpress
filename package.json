@@ -25,5 +25,8 @@
     "> 1%",
     "maintained node versions",
     "not dead"
-  ]
+  ],
+  "dependencies": {
+    "gulp-minify": "^3.1.0"
+  }
 }

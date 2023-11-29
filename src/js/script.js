@@ -101,10 +101,11 @@ window.addEventListener('DOMContentLoaded', () => {
             if(!maxWorkHour || maxWorkHour < 0 || typeof(maxWorkHour) != 'number' || Math.floor(maxWorkHour) != maxWorkHour) {
                 maxWorkHour = 19;
             }
-            
+
             genDate = new Date(new Date(minDate.getTime() + 1 * 60 * 60 * 1000).setMinutes(0, 0, 0));
             
             while(genDate.getTime() >= minDate.getTime() && genDate.getTime() <= maxDate.getTime()) {
+
                 if(genDate.getHours() >= minWorkHour && genDate.getHours() <= maxWorkHour) {
                     timetable.addLesson(timetable.availableLessonTypes[Math.floor(Math.random() * timetable.availableLessonTypes.length)].lessonType, genDate);
                 }
@@ -270,7 +271,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function Timetable (availableLessonTypes, allUsers, lessons) {
+    function Timetable (availableLessonTypes) {
 
         this.availableLessonTypes = [];
         try {
@@ -289,24 +290,9 @@ window.addEventListener('DOMContentLoaded', () => {
             this.availableLessonTypes.push(new LessonType('senior', 'WordPress Senior', "Підійде тим, хто вже має комерційний досвід у сфері, але відчуває, що йому не достатньо знань для зросту у кар'єрі."));
         }
  
-        try {
-            if(allUsers[0].userName) {
-                for(let i in allUsers) {
-                    this.allUsers.push(allUsers[i]);
-                }
-            }
-        } catch (error) {
-            this.allUsers = [];
-        }
+        this.allUsers = [];
 
-        try {
-            lessons[0].isFree();
-            for(let i in lessons) {
-                this.lessons.push(allUsers[i]);
-            }
-        } catch (error) {
-            this.lessons = [];
-        }
+        this.lessons = [];
 
         this.getAvailableLessonTypes = function () {
             return this.availableLessonTypes;
@@ -351,7 +337,12 @@ window.addEventListener('DOMContentLoaded', () => {
                     try {
                         lessons[0].lessonTime.getDate();
                         for(let i in lessons) {
-                            freeLessons.push(lessons[i]); 
+                            if(lessons[i].isFree()) {
+                                freeLessons.push(lessons[i]); 
+                            } else {
+                                console.log("Lessons transferred to the method must be free for registration");
+                                return undefined;
+                            }
                         }
                     } catch (error) {
                         for(let i in this.getFreeLessons()) {
@@ -386,7 +377,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 let result = [];
 
                 for(let i in this.lessons) {
-                    if(this.lessons[i].lessonType == lessonType && this.lessons[i].isFree()) {
+                    if(this.lessons[i].lessonType === lessonType && this.lessons[i].isFree()) {
                         result.push(this.lessons[i]);
                     }
                 }
@@ -990,7 +981,7 @@ window.addEventListener('DOMContentLoaded', () => {
                         }
 
                         try{
-                            fetch('../mailer/smart.php', {
+                            fetch('mailer/smart.php', {
                                 method: 'POST',
                                 body: JSON.stringify(sendUserData)
                             });

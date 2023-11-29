@@ -35,13 +35,13 @@ try {
     $mail->isSMTP();                                            //Send using SMTP
     $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
     $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-    $mail->Username   = 'bredtv6@gmail.com';                  //SMTP username
-    $mail->Password   = 'icrzibusutqzncly';                          //SMTP password
+    $mail->Username   = 'qunthunnan@gmail.com';                  //SMTP username
+    $mail->Password   = 'pcqv tqbs tdjk tevc';                          //SMTP password
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;          //Enable implicit TLS encryption
     $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 
     //Recipients
-    $mail->setFrom('bredtv6@gmail.com', 'Wordpress');
+    $mail->setFrom('qunthunnan@gmail.com', 'Wordpress');
     $mail->addAddress(''. $email .'');     //Add a recipient
     // $mail->addAddress('ellen@example.com');               //Name is optional
     // $mail->addReplyTo('info@example.com', 'Information');
@@ -53,7 +53,7 @@ try {
     //$mail->addAttachment('/tmp/image.jpg', 'new.jpg');    //Optional name
 
     //Content
-    $mail->isHTML(true);                                  //Set email format to HTML
+    $mail->isHTML(true);                                 //Set email format to HTML
     $mail->Subject = 'Посилання на вебінар';
     $mail->Body    = '<table width="512" align="center" style="padding: 30px; border-radius: 30px; font-family: Roboto, Helvetica, Arial, Verdana; height: 100%; background: #3e1f1a no-repeat;
     background: linear-gradient(61deg, rgba(80,82,81,1) 0%, rgba(62,31,26,1) 100%) no-repeat;">
