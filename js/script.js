@@ -1,6 +1,6 @@
-window.addEventListener('DOMContentLoaded', () => {
-
-    //backend simulation
+import flatpickr from "flatpickr";
+import { Ukrainian } from "flatpickr/dist/l10n/uk.js";
+//backend simulation
 
     function generateRandomString(minLength, maxLength) {
         let length = 0;
@@ -102,7 +102,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 maxWorkHour = 19;
             }
 
-            genDate = new Date(new Date(minDate.getTime() + 1 * 60 * 60 * 1000).setMinutes(0, 0, 0));
+            let genDate = new Date(new Date(minDate.getTime() + 1 * 60 * 60 * 1000).setMinutes(0, 0, 0));
             
             while(genDate.getTime() >= minDate.getTime() && genDate.getTime() <= maxDate.getTime()) {
 
@@ -133,7 +133,7 @@ window.addEventListener('DOMContentLoaded', () => {
             getFreeLessonsMethod = () => {let result = timetable.getFreeLessons(); return result};
         }
         
-        curentFreeLessons = getFreeLessonsMethod(minDate, maxDate);
+        let curentFreeLessons = getFreeLessonsMethod(minDate, maxDate);
         for(let i in curentFreeLessons) {
             bookTargetCount += curentFreeLessons[i].getFreeSlotsCount();
         }
@@ -607,7 +607,7 @@ window.addEventListener('DOMContentLoaded', () => {
             lessonTypeSelectList.append(listItemElement);
         }
         lessonTypeListItems = windowManager.querySelectorAll('.window-manager__window__lesson-type__item');
-        lessonTypeListMessages = windowManager.querySelectorAll('.window-manager__window__lesson-type__message');
+        let lessonTypeListMessages = windowManager.querySelectorAll('.window-manager__window__lesson-type__message');
     }
 
     function showLessonTypeList (e) {
@@ -626,7 +626,7 @@ window.addEventListener('DOMContentLoaded', () => {
             freeDays.push(timetable.getFilteredFreeLessons(selectedLessonType)[i].lessonTime);
         }
         calendar = flatpickr(calendarElem, {
-            "locale": "uk",
+            "locale": Ukrainian, 
             altInput: true,
             altFormat: "j F, Y",
             dateFormat: "Y-m-d",
@@ -1038,5 +1038,3 @@ window.addEventListener('DOMContentLoaded', () => {
             })
         }
     });
-
-});
