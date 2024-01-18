@@ -1,0 +1,151 @@
+section.window-manager
+	.window-manager__window.window-manager__window_book
+		.window-manager__window__close.window-manager__window__close_book
+			span.icon-mac_close_btn
+				span.path1
+				span.path2
+		form.window-manager__window__form
+			.window-manager__window__lesson-type
+				label(data-i18n="label__lesson-type") Оберіть цікавий для вас курс:
+				#lesson-type.window-manager__window__lesson-type-select
+					.window-manager__window__lesson-type-selected
+					ul.window-manager__window__lesson-type__list
+			.window-manager__window__choose-day
+				label(data-i18n="window__choose-day") Оберіть зручний день вебінару:
+				input#calendar.window-manager__window__choose-day__calendar
+			.window-manager__window__choose-time
+				label(data-i18n="label__choose-day") Оберіть зручний час вебінару:
+				.window-manager__window__choose-time-times
+					ul.window-manager__window__choose-time__list
+			.window-manager__window__name
+				label(for='name' data-i18n="label_name") Вас звати:
+				input#name(maxlength='256' type='text' name='name')
+			.window-manager__window__email
+				label(for='email' data-i18n="label_email") Ваш e-mail:
+				input#email(maxlength='320' type='email' name='email')
+			.window-manager__window__submit
+				button.book-btn.book-btn_submit(type='submit' data-i18n="btn_submit") Записатись
+			.window-manager__window__policy
+				input#policy(name='policy' required='' type='checkbox')
+				label(for='policy')
+					span(data-i18n="label_policy") Я згоден(на) з 
+					a(target='_blank' href=`/${lang}/policy` data-i18n="label_policy2") політикою конфіденційності
+	.window-manager__window.window-manager__window_booked
+		.window-manager__window__close.window-manager__window-close_booked
+			span.icon-mac_close_btn
+				span.path1
+				span.path2
+		.window-manager__window__descr
+			| Дякую, що записались, ваш вебінар відбудеться: 30 листопада о 15:00. Посилання на вебінар прийде на електронну пошту.😊
+	.window-manager__window.window-manager__window_registered
+		.window-manager__window__close.window-manager__window-close_registered
+			span.icon-mac_close_btn
+				span.path1
+				span.path2
+		.window-manager__window__descr(data-i18n="window__descr2")
+			| Схоже, ви вже записались раніше на зайняття. Ми надіслали інформацію про вебінар на вашу електронну адресу.
+	.window-manager__window.window-manager__window_error
+		.window-manager__window__close.window-manager__window-close_error
+			span.icon-mac_close_btn
+				span.path1
+				span.path2
+		.window-manager__window__descr(data-i18n="window__descr3")
+			| Схоже, на сервері сталась помилка. Вибачте за технічні негаразди, ми вже працюємо над рішенням. Спробуйте, будь ласка, пізніше.😥
+section.main
+	.container
+		.logo
+			img.logo-icon(src=require('../icons/main/owl.png') alt='logo')
+			.logo-text(data-i18n="logo-text") WordPress інтенсив
+		h1.title-text(data-i18n="title-text") Створити свій сайт на WordPress
+		h2.title-big-text(data-i18n="title-big-text") це просто!
+		h2.title-third-text(data-i18n="title-third-text") Куди важкіше зробити це правильно!
+		.promo-text(data-i18n="promo-text")
+			| Щодня в Україні з'являється понад 5000 нових сайтів.
+			| І лише одиниці з них стають популярними та приносять відчутний прибуток. У чому секрет? У чому формула успіху? Дізнайтесь на майбутньому дводенному 
+			span.free(data-i18n="free") БЕЗКОШТОВНОМУ
+			|  Інтенсиві!
+		button.book-btn(data-i18n="book-btn") Записатись на інтенсив!
+		.learn-more-text(data-i18n="learn-more-text") дізнатися більше про інтенсив
+		a(href='#waiting')
+			img.arrow(src=require('../icons/main/down.png') alt='')
+section#waiting.waiting
+	.container
+		h2.waiting-title(data-i18n="waiting-title") Що вас чекає у нашому інтенсиві?
+		.line
+		.promo-text(data-i18n="promo-text2") 2 безкоштовних повноцінних навчальних вебінарів, де:
+		.waiting-wrapper
+			.waiting-block
+				img.waiting-laptop(src=require('../img/waiting/waiting1.png') alt='lapto')
+				.descr-text(data-i18n="descr-text")
+					| Всього за два безкоштовні вебінари ми навчимо вас, як створити свій сайт на WordPress.
+			.waiting-block
+				img.waiting-laptop(src=require('../img/waiting/waiting_2.png') alt='laptop')
+				.descr-text(data-i18n="descr-text2")
+					| Покажемо, як правильно оптимізувати сайт та зробити його привабливим для пошукових систем. Тільки свіжа, професійна та
+					| актуальна інформація!
+			.waiting-block
+				img.waiting-laptop(src=require('../img/waiting/waiting_3.png') alt='laptop')
+				.descr-text(data-i18n="descr-text3")
+					| Ви дізнаєтеся, що таке «хороша індексація»,
+					| «висока відвідуваність», «стабільний приріст відвідувачів», «ТОП за запитами» і, що набагато важливіше, як досягти всіх цих показників!
+section.optimisation
+	.container
+		h2.optimisation-title(data-i18n="optimisation-title") Що таке оптимізація та навіщо вона потрібна?
+		img.optimisation-mobile(src=require('../img/optimisation/woman_bg.jpg') alt='')
+		.optimisation-text
+			span(data-i18n="optimisation-text") На просторах інтернету незліченна кількість діючих і навіть занедбаних сайтів. Більшість із них збігаються не лише за категоріями, а й за змістом.
+			br
+			br
+			span(data-i18n="optimisation-text2") Уявіть собі тисячі сайтів, на яких тим чи іншим чином надається та сама інформація або продається та сама послуга. І потрапити на ці сайти можна лише за тематичними запитами в пошукових системах.
+			br
+			br
+			span(data-i18n="optimisation-text3") Але як вам бути, якщо ваш сайт схожий на сотню чи тисячу таких самих, а на одній сторінці гугла чи яндексу всього 10 позицій? Як навести відвідувачів сторінки свого ресурсу? Саме для цього потрібна оптимізація – для виведення вашого сайту на першу сторінку пошуку!
+			br
+			br
+			span.bold(data-i18n="optimisation-text4") Ми навчимо вас, як зробити ваш сайт привабливим для пошукових систем і порадимо, як вивести його на перші сторінки, оминаючи всіх конкурентів.
+section.finish
+	.container
+		h2.finish-title(data-i18n="finish-title") По закінченні навчання ви зможете
+		.finish-line
+		.finish-wrapper
+			.finish-item
+				.finish-circle
+					img.item-img(src=require('../icons/finish/finish_icon_1.png') alt='')
+				.item-text(data-i18n="item-text") Створити свій сайт чи блог
+			.finish-item
+				.finish-circle
+					img.item-img(src=require('../icons/finish/finish_icon_2.png') alt='')
+				.item-text(data-i18n="item-text2") Правильно його оптимізувати
+			.finish-item
+				.finish-circle
+					img.item-img(src=require('../icons/finish/finish_icon_3.png') alt='')
+				.item-text(data-i18n="item-text3") Забезпечити йому повільний, але впевнений зріст у ТОП
+			.finish-item
+				.finish-circle
+					img.item-img(src=require('../icons/finish/finish_icon_4.png') alt='')
+				.item-text(data-i18n="item-text4") Досягти стабільного приросту відвідувачів
+			.finish-item
+				.finish-circle
+					img.item-img(src=require('../icons/finish/finish_icon_5.png') alt='')
+				.item-text(data-i18n="item-text5") Отримувати відчутний прибуток
+section.booking
+	.container
+		img.gift-img(src=require('../icons/booking/gift.png') alt='')
+		.booking-text(data-i18n="booking-text")
+			| Для всіх учасників інтенсиву передбачені бонуси та подарунки. Натискайте на кнопку нижче, беріть участь у вебінарах та забирайте свій приз після закінчення навчання!
+		button.book-btn(data-i18n="book-btn2") Записатись на інтенсив!
+section.first-webinar
+	.container
+		img.first-img(src=require('../img/first-webinar/first_web_laptop.png') alt='')
+		h3.first-web-title(data-i18n="first-web-title") Перший вебінар відбудеться:
+		h2.first-web-time 10 вересня о 20:00 за київським часом
+		.first-text(data-i18n="first-text") Встигніть записатися, кількість місць обмежена!
+footer
+	.container
+		.footer-links
+			a(target='_blank' href='https://t.me/Qunthunnan0' data-i18n="footer-links") Служба підтримки
+			| |
+			a(target='_blank' href=`/${lang}/policy` data-i18n="footer-links2") Політика конфіденційності
+		.footer-tel
+			span(data-i18n="footer-tel") Зателефонуйте нам:
+			a(href='tel:08005550121') 0800-555-01-21
