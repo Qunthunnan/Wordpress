@@ -1017,11 +1017,12 @@ submitBtns.forEach((element) => {
                             day: 'numeric', 
                             hour: "numeric", 
                             minute: "numeric"
-                        })
+                        }),
+                        lang: lang,
                     }
 
                     try{
-                        fetch('mailer/smart.php', {
+                        fetch('/wordpress/smart.php', {
                             method: 'POST',
                             body: JSON.stringify(sendUserData)
                         });
